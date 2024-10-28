@@ -33,6 +33,20 @@ namespace DATN_API.Controllers
             return BadRequest("Not Found");
         }
 
+
+        [HttpGet("get-brand-by-id/{id}")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            var brand = await _uow.BrandReponsitory.GetAsync(id);
+            if (brand == null)
+            {
+                return BadRequest($"Not found id = [{id}]");
+
+
+            }
+            return Ok(_mapper.Map<Brand, ListBrandDTO>(brand));
+        }
+
         [HttpGet("get-brand-by-id/{id}")]
         public async Task<ActionResult> GetById(int id)
         {
