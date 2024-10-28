@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Blog
+    public class Blog: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string HeadLine { get; set; }
         public string Content { get; set; }
         public DateTime DatePush { get; set; }

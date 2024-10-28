@@ -32,12 +32,13 @@ namespace DATN_Infrastructure.Repository
 
         public IEnumerable<T> GetAll()=>_context.Set<T>().AsNoTracking().ToList();
 
-        public IEnumerable<T> GetAll(params Expression<Func<T, bool>>[] includes)
+        public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includes)
        => _context.Set<T>().AsNoTracking().ToList();
+
 
         public async Task<IReadOnlyCollection<T>> GetAllAsync()
         => await _context.Set<T>().AsNoTracking().ToListAsync();
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, bool>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
             var query = _context.Set<T>().AsQueryable();
             foreach(var item in includes)
@@ -47,7 +48,9 @@ namespace DATN_Infrastructure.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetAsync(T id)
+ 
+
+        public async Task<T> GetAsync(int id)
         => await _context.Set<T>().FindAsync(id);
 
         public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Comment
+    public class Comment:BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Content { get; set; }
         public DateTime TimeCreated { get; set; }
         public int ProductId { get; set; }

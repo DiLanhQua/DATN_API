@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Media
+    public class Media: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public bool IsPrimary { get; set; }
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }

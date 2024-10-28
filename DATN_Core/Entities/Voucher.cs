@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public  class Voucher
+    public  class Voucher: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         public string VoucherName { get; set; }
         public DateTime TimeStart { get; set; }

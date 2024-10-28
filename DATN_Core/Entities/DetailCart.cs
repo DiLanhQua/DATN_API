@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class DetailCart
+    public class DetailCart: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public byte Quantity { get; set; }
         public int DetailProductId { get; set; }
         public virtual DetailProduct DetailProduct { get; set; }

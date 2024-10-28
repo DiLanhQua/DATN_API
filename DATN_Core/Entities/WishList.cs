@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class WishList
+    public class WishList: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public bool Status { get; set; }
         public DateTime DateAdd { get; set; }
         public int ProductId { get; set; }

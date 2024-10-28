@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class DetailProduct
+    public class DetailProduct: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         public string Size { get; set; }
 

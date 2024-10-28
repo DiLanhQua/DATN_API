@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Order
+    public class Order: BasicEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public decimal Total { get; set; }  
         public DateTime TimeOrder { get; set; }
         public byte StatusOrder { get; set; }
