@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Image: BasicEntity
+    public class Image: BasicEntity<int>
     {
         //public int Id { get; set; }
         public string Link { get; set; } = string.Empty;

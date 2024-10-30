@@ -1,4 +1,5 @@
-﻿using DATN_Core.Interface;
+﻿using DATN_Core.Entities;
+using DATN_Core.Interface;
 using DATN_Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Infrastructure.Repository
 {
-    public class GenericeReponsitory<T> : IGenericeReponsitory<T> where T : class
+    public class GenericeReponsitory<T> : IGenericeReponsitory<T> where T : BasicEntity<int>
     {
         private readonly ApplicationDbContext _context;
         public GenericeReponsitory(ApplicationDbContext context)
@@ -55,12 +56,18 @@ namespace DATN_Infrastructure.Repository
 
         public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = _context.Set<T>();
-            foreach(var item in includes)
+           /* IQueryable<T> query = _context.Set<T>();
+            foreach (var item in includes)
             {
                 query = query.Include(item);
             }
-            return await ((DbSet<T>)query).FindAsync(id);
+            return await ((DbSet<T>)query).FindAsync(id);*/
+           IQueryable<T> query = _context.Set<T>().Where(x => x.Id == id);
+            foreach (var item in includes)
+            {
+                query = query.Include(item);
+            }
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(int id, T entity)

@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Infrastructure.Data.DTO
 {
-     public class BrandDTO
+    internal class ProductDTO
     {
-
-    }
-    public class ListBrandDTO
-    {
-
     }
 }

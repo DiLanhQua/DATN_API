@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class DeliveryAddress: BasicEntity
+    public class DeliveryAddress: BasicEntity<int>
     {
         //public int Id { get; set; }
         public string Address { get; set; } = string.Empty;

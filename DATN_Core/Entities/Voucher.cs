@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public  class Voucher: BasicEntity
+    public  class Voucher: BasicEntity<int>
     {
         //public int Id { get; set; }
 

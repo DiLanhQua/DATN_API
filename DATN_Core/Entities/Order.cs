@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Order: BasicEntity
+    public class Order: BasicEntity<int>
     {
         //public int Id { get; set; }
         public decimal Total { get; set; }  

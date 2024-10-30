@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Cart: BasicEntity
+    public class Cart: BasicEntity<int>
     {
         //public int Id { get; set; }
         public DateTime TimeCreated { get; set; }

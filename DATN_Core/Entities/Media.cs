@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class Media: BasicEntity
+    public class Media: BasicEntity<int>
     {
         //public int Id { get; set; }
         public bool IsPrimary { get; set; }

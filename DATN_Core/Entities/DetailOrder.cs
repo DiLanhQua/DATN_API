@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class DetailOrder: BasicEntity
+    public class DetailOrder: BasicEntity<int>
     {
         //public int Id { get; set; }
         public byte Quantity { get; set; }

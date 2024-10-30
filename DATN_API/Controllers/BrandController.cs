@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using DATN_Core.Entities;
+using Microsoft.AspNetCore.Http;
 using DATN_Core.Interface;
 using DATN_Infrastructure.Data.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using DATN_Core.Sharing;
+using DATN_API.Helper;
 
 namespace DATN_API.Controllers
 {
@@ -19,18 +22,11 @@ namespace DATN_API.Controllers
             _mapper = mapper;
         }
         [HttpGet("get-all-brand")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] BrandParams brandParams)
         {
-            var all_cate = await _uow.BrandReponsitory.GetAllAsync();
-            if (all_cate != null)
-            {
-                var all_cate_list = all_cate.ToList();
-
-                var res = _mapper.Map<IReadOnlyList<Brand>, IReadOnlyList<ListBrandDTO>>(all_cate_list);
-
-                return Ok(res);
-            }
-            return BadRequest("Not Found");
+            var src = await _uow.BrandReponsitory.GetAllAsync(brandParams);
+            var result = _mapper.Map<IReadOnlyList<BrandDTO>>(src.BrandsDTO);
+            return Ok(new Pagination<BrandDTO>(brandParams.Pagesize, brandParams.PageNumber,src.totalItems, result));
         }
 
 
@@ -44,31 +40,19 @@ namespace DATN_API.Controllers
 
 
             }
-            return Ok(_mapper.Map<Brand, ListBrandDTO>(brand));
+            return Ok(_mapper.Map<Brand, BrandDTO>(brand));
         }
 
-        [HttpGet("get-brand-by-id/{id}")]
-        public async Task<ActionResult> GetById(int id)
-        {
-            var brand = await _uow.BrandReponsitory.GetAsync(id);
-            if (brand == null)
-            {
-                return BadRequest($"Not found id = [{id}]");
-
-
-            }
-            return Ok(_mapper.Map<Brand, ListBrandDTO>(brand));
-        }
         [HttpPost("add-brand")]
-        public async Task<ActionResult> Addbrand(BrandDTO brandDto)
+        public async Task<ActionResult> Addbrand([FromForm]CreateBrandDTO brandDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = _mapper.Map<Brand>(brandDto);
-                    await _uow.BrandReponsitory.AddAsync(res);
-                    return Ok(res);
+                    var res = await _uow.BrandReponsitory.AddAsync(brandDto);
+
+                    return res ? Ok(brandDto) : BadRequest(res);
                 }
                 return BadRequest();
             }
@@ -78,21 +62,15 @@ namespace DATN_API.Controllers
             }
         }
         [HttpPut("update-brand-by-id/{id}")]
-        public async Task<ActionResult> Updatebrand(int id, BrandDTO brandDto)
+        public async Task<ActionResult> Updatebrand(int id, UpdateBrandDTO updateBrandDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var cate = await _uow.BrandReponsitory.GetAsync(id);
-                    if (cate != null)
-                    {
-                        //cate.brandName = brandDto.brandName;
-                        //cate.Image = brandDto.Image;
-                        _mapper.Map(brandDto, cate);
-                    }
-                    await _uow.BrandReponsitory.UpdateAsync(id, cate);
-                    return Ok(cate);
+                    var res = await _uow.BrandReponsitory.UpdateAsync(id, updateBrandDTO );
+
+                    return res ? Ok(updateBrandDTO) : BadRequest(res);
                 }
                 return BadRequest($"Not Found Id [{id}]");
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public class WishList: BasicEntity
+    public class WishList: BasicEntity<int>
     {
         //public int Id { get; set; }
         public bool Status { get; set; }

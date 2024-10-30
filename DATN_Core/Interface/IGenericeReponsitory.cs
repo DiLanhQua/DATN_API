@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DATN_Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Interface
 {
-    public interface IGenericeReponsitory<T> where T : class
+    public interface IGenericeReponsitory<T> where T : BasicEntity<int>
 
     {
         Task<IReadOnlyCollection<T>> GetAllAsync();

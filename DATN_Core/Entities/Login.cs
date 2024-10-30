@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Entities
 {
-    public  class Login: BasicEntity
+    public  class Login: BasicEntity<int>
     {
         //public int Id { get; set; }
 
