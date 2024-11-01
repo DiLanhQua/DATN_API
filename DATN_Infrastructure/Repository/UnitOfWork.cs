@@ -19,6 +19,7 @@ namespace DATN_Infrastructure.Repository
         private readonly IMapper _mapper;
         public ICategoryReponsitory CategoryReponsitory { get; }
 
+        public ICartReponsitory CartReponsitory { get; }
         public IBrandReponsitory BrandReponsitory { get; }
 
         public IProductReponsitory ProductReponsitory { get; }
@@ -27,7 +28,7 @@ namespace DATN_Infrastructure.Repository
             _context = context;
             _fileProvider = fileProvider;
             _mapper = mapper;
-            CategoryReponsitory = new CategoryReponsitory(_context);
+            CartReponsitory = new CartReponsitory(_context,  _mapper);
             BrandReponsitory = new BrandReponsitory(_context, _fileProvider, _mapper);
             ProductReponsitory = new ProductReponsitory(_context);
         }

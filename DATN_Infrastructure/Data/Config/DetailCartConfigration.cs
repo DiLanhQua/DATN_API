@@ -16,5 +16,6 @@ namespace DATN_Infrastructure.Data.Config
             builder.Property(x => x.Id).IsRequired();
             builder.Property(x => x.Quantity);
         }
+
     }
 }

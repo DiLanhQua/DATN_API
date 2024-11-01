@@ -21,6 +21,7 @@ namespace DATN_Infrastructure.Data.DTO
         public string Image { get; set; }
 
     }
+
     public class CreateBrandDTO: BaseBrand
     {
         public IFormFile Picture { get; set; }
