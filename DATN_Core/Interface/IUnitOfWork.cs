@@ -11,6 +11,7 @@ namespace DATN_Core.Interface
         public ICategoryReponsitory CategoryReponsitory { get; }    
         public IBrandReponsitory BrandReponsitory { get; }
 
+        public ICartReponsitory CartReponsitory { get; }
         public IProductReponsitory ProductReponsitory { get; }
     }
 }
