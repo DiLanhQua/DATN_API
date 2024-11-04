@@ -13,5 +13,8 @@ namespace DATN_Core.Interface
 
         public ICartReponsitory CartReponsitory { get; }
         public IProductReponsitory ProductReponsitory { get; }
+
+        public IOrderReponsitory OrderReponsitory { get; }
+        public IDetailOrderReponsitory DetailOrderReponsitory { get; }
     }
 }

@@ -23,6 +23,9 @@ namespace DATN_Infrastructure.Repository
         public IBrandReponsitory BrandReponsitory { get; }
 
         public IProductReponsitory ProductReponsitory { get; }
+
+        public IOrderReponsitory OrderReponsitory { get; }
+        public IDetailOrderReponsitory DetailOrderReponsitory { get; }
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper)
         {
             _context = context;
@@ -31,6 +34,8 @@ namespace DATN_Infrastructure.Repository
             CartReponsitory = new CartReponsitory(_context,  _mapper);
             BrandReponsitory = new BrandReponsitory(_context, _fileProvider, _mapper);
             ProductReponsitory = new ProductReponsitory(_context);
+            OrderReponsitory = new OrderReponsitory(_context, _mapper);
+            DetailOrderReponsitory = new DetailOrderReponsitory(_context, _mapper);
         }
     }
 }
