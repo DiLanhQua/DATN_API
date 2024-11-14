@@ -38,7 +38,7 @@ namespace DATN_API.Controllers
 
 
         [HttpPost("add-product")]
-        public async Task<ActionResult> Addproduct([FromBody] CreateProductDTO proDto)
+        public async Task<ActionResult> Addproduct([FromBody] ProductDTO proDto)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace DATN_API.Controllers
             }
         }
         [HttpPut("UP-product/{id}")]
-        public async Task<ActionResult> Upproduct(int id, UpdateProductDTO proDto)
+        public async Task<ActionResult> Upproduct(int id, ProductDTO proDto)
         {
             try
             {

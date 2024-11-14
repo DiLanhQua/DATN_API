@@ -8,16 +8,16 @@ namespace DATN_API.Mappers
     {
         public MappingProduct()
         {
-            CreateMap<ProductDetailDTO, ProductDTO>()
+           /* CreateMap<ProductDetailDTO, ProductDTO>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Size))
                 .ForMember(dest => dest.Description, opt => opt.Ignore())
                 .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
                 .ForMember(dest => dest.BrandId, opt => opt.Ignore())
-                .ReverseMap();
+                .ReverseMap();*/
 
             CreateMap<Product, ProductDTO>().ReverseMap();
-            CreateMap<CreateProductDTO, Product>().ReverseMap();
-            CreateMap<UpdateProductDTO, Product>().ReverseMap();
+            CreateMap<ProductDTO, Product > ().ReverseMap();
+
         }
     }
 }
