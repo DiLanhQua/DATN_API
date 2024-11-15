@@ -28,6 +28,8 @@ namespace DATN_Infrastructure.Data
         public virtual DbSet<Voucher> Vouchers { get; set; }
         public virtual DbSet<WishList> WishLists { get; set; }
 
+        public virtual DbSet<Color> Colors { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
