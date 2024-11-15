@@ -21,7 +21,8 @@ namespace DATN_Infrastructure.Repository
 
         public ICartReponsitory CartReponsitory { get; }
         public IBrandReponsitory BrandReponsitory { get; }
-
+        public IVoucherRepository VoucherRepository { get; }
+        public ICommentRepository CommentRepository { get; }
         public IProductReponsitory ProductReponsitory { get; }
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper)
         {
@@ -31,6 +32,8 @@ namespace DATN_Infrastructure.Repository
             CartReponsitory = new CartReponsitory(_context,  _mapper);
             BrandReponsitory = new BrandReponsitory(_context, _fileProvider, _mapper);
             ProductReponsitory = new ProductReponsitory(_context);
+            CommentRepository = new CommentRepository(_context, _mapper);
+            VoucherRepository = new VoucherRepository(_context, _mapper);
         }
     }
 }
