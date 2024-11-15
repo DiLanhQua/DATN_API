@@ -1,4 +1,10 @@
+using DATN_Core.Entities;
+using DATN_Core.Interface;
+using DATN_Core.Sharing;
+using DATN_Core.DTO;
 using DATN_Infrastructure;
+using DATN_Infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 using System.Reflection;
@@ -19,6 +25,10 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(i =>
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine
     (Directory.GetCurrentDirectory(), "wwwroot")));
+builder.Services.Configure<EmailDTO>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmail, EmailReponsitory>();
+builder.Services.AddScoped<QrCoder>();
+builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>

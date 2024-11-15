@@ -21,6 +21,8 @@ namespace DATN_Core.Interface
         public IBlogReponsitory BlogReponsitory { get; }
         public ICommentRepository CommentRepository { get; }
         public IVoucherRepository VoucherRepository { get; }
+        public IAccountReponsitory AccountReponsitory { get; }
+        public IEmail EmailReponsitory { get; }
 
     }
 }
