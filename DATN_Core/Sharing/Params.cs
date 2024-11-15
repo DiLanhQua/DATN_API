@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DATN_Core.Sharing
 {
-    public class BrandParams
+    public class Params
     {
         public int maxPageSize { get; set; } = 5;
         private int pageSize = 3;

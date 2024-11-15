@@ -29,7 +29,7 @@ namespace DATN_API.Controllers
             _mapper = mapper;
         }
         [HttpGet("get-all-cart")]
-        public async Task<ActionResult> Get([FromQuery] BrandParams brandParams)
+        public async Task<ActionResult> Get([FromQuery] Params brandParams)
         {
             var src = await _uow.CartReponsitory.GetAllAsync(brandParams);
             var result = _mapper.Map<IReadOnlyList<CartDe>>(src.CartsDTO);

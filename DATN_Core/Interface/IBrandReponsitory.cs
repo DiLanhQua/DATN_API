@@ -12,7 +12,7 @@ namespace DATN_Core.Interface
 {
     public interface IBrandReponsitory : IGenericeReponsitory<Brand>
     {
-        Task<ReturnBrandDTO> GetAllAsync(BrandParams brandParams);
+        Task<ReturnBrandDTO> GetAllAsync(Params brandParams);
         Task<bool> AddAsync (CreateBrandDTO brandDTO);
         Task<bool> UpdateAsync(int id, UpdateBrandDTO brandDTO);
     }

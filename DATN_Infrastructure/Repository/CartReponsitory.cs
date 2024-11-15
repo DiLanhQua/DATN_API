@@ -93,7 +93,7 @@ namespace DATN_Infrastructure.Repository
             return false;
         }
 
-        public async Task<ReturnCartDTO> GetAllAsync(BrandParams brandParams)
+        public async Task<ReturnCartDTO> GetAllAsync(Params brandParams)
         {
             var result = new ReturnCartDTO();
             var query = await _context.DetailCarts.Select(p => new CartDe

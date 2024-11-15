@@ -57,7 +57,7 @@ namespace DATN_Infrastructure.Repository
             return false;
         }
 
-        public async Task<ReturnBrandDTO> GetAllAsync(BrandParams brandParams)
+        public async Task<ReturnBrandDTO> GetAllAsync(Params brandParams)
         {
             var result = new ReturnBrandDTO();
             var query = await _context.Brands.AsNoTracking().ToListAsync();

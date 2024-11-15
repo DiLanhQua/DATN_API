@@ -11,7 +11,7 @@ namespace DATN_Core.Interface
 {
     public interface ICartReponsitory : IGenericeReponsitory<Cart>
     {
-        Task<ReturnCartDTO> GetAllAsync(BrandParams brandParams);
+        Task<ReturnCartDTO> GetAllAsync(Params brandParams);
         Task<bool> AddAsync(CreartCart cartDTO);
         Task<bool> UpdateCart(int id, UpCart cartDTO);
         Task<bool> DeleteCart(int id);

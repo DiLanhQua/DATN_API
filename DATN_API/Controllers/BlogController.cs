@@ -1,58 +1,57 @@
 ﻿using AutoMapper;
+using DATN_API.Helper;
+using DATN_Core.DTO;
 using DATN_Core.Entities;
-using Microsoft.AspNetCore.Http;
 using DATN_Core.Interface;
-using DATN_Infrastructure.Data.DTO;
+using DATN_Core.Sharing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DATN_Core.Sharing;
-using DATN_API.Helper;
 
 namespace DATN_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class BlogController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        public BrandController(IUnitOfWork Uow, IMapper mapper)
+        public BlogController(IUnitOfWork Uow, IMapper mapper)
         {
             _uow = Uow;
             _mapper = mapper;
         }
-        [HttpGet("get-all-brand")]
+        [HttpGet("get-all-blog")]
         public async Task<ActionResult> Get([FromQuery] Params brandParams)
         {
-            var src = await _uow.BrandReponsitory.GetAllAsync(brandParams);
-            var result = _mapper.Map<IReadOnlyList<BrandDTO>>(src.BrandsDTO);
-            return Ok(new Pagination<BrandDTO>(brandParams.Pagesize, brandParams.PageNumber,src.totalItems, result));
+            var src = await _uow.BlogReponsitory.GetAllAsync(brandParams);
+            var result = _mapper.Map<IReadOnlyList<BlogDTO>>(src.BlogsDTO);
+            return Ok(new Pagination<BlogDTO>(brandParams.Pagesize, brandParams.PageNumber, src.totalItems, result));
         }
 
 
-        [HttpGet("get-brand-by-id/{id}")]
+        [HttpGet("get-blog-by-id/{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var brand = await _uow.BrandReponsitory.GetAsync(id);
+            var brand = await _uow.BlogReponsitory.GetAsync(id);
             if (brand == null)
             {
                 return BadRequest($"Not found id = [{id}]");
 
 
             }
-            return Ok(_mapper.Map<Brand, BrandDTO>(brand));
+            return Ok(_mapper.Map<Blog, BlogDTO>(brand));
         }
 
-        [HttpPost("add-brand")]
-        public async Task<ActionResult> Addbrand([FromForm]CreateBrandDTO brandDto)
+        [HttpPost("add-blog")]
+        public async Task<ActionResult> AddBlog([FromForm] CreateBlogDTO mediaDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.BrandReponsitory.AddAsync(brandDto);
+                    var res = await _uow.BlogReponsitory.AddAsync(mediaDTO);
 
-                    return res ? Ok(brandDto) : BadRequest(res);
+                    return res ? Ok(mediaDTO) : BadRequest(res);
                 }
                 return BadRequest();
             }
@@ -61,16 +60,16 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("update-brand-by-id/{id}")]
-        public async Task<ActionResult> Updatebrand(int id, UpdateBrandDTO updateBrandDTO)
+        [HttpPut("update-blog-by-id/{id}")]
+        public async Task<ActionResult> UpdateMedia(int id, UpdateDTO updateMediaDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.BrandReponsitory.UpdateAsync(id, updateBrandDTO );
+                    var res = await _uow.BlogReponsitory.UpdateAsync(id, updateMediaDTO);
 
-                    return res ? Ok(updateBrandDTO) : BadRequest(res);
+                    return res ? Ok(updateMediaDTO) : BadRequest(res);
                 }
                 return BadRequest($"Not Found Id [{id}]");
             }
@@ -79,17 +78,17 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("delete-brand-by-id/{id}")]
-        public async Task<ActionResult> Removebrand(int id)
+        [HttpDelete("delete-blog-by-id/{id}")]
+        public async Task<ActionResult> RemoveMedia(int id)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var cate = await _uow.BrandReponsitory.GetAsync(id);
+                    var cate = await _uow.BlogReponsitory.GetAsync(id);
                     if (cate != null)
                     {
-                        await _uow.BrandReponsitory.DeleteAsync(id);
+                        await _uow.BlogReponsitory.DeleteAsync(id);
                     }
                     return Ok(cate);
                 }
