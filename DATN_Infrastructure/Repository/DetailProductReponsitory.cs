@@ -31,7 +31,6 @@ namespace DATN_Infrastructure.Repository
                 Size = ProDTO.Size,
                 Price = ProDTO.Price,
                 Quantity = ProDTO.Quantity,
-                Color = ProDTO.Color,
                 Gender = ProDTO.Gender,
                 Status = ProDTO.Status,
                 ProductId = ProDTO.ProductId
@@ -102,7 +101,6 @@ namespace DATN_Infrastructure.Repository
                 exiting.Size = ProDTO.Size;
                 exiting.Price = ProDTO.Price;
                 exiting.Quantity = ProDTO.Quantity;
-                exiting.Color = ProDTO.Color;
                 exiting.Gender = ProDTO.Gender;
                 exiting.Status = ProDTO.Status;
                 exiting.ProductId = ProDTO.ProductId;

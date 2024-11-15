@@ -101,7 +101,6 @@ namespace DATN_Infrastructure.Repository
                 DetailProductId = p.DetailProductId,
                 Price = p.DetailProduct.Price,
                 Quantity = p.Quantity,
-                Color = p.DetailProduct.Color,
                 Size = p.DetailProduct.Size,
                 Gender = p.DetailProduct.Gender,
 

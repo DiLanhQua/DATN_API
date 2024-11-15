@@ -12,7 +12,6 @@ namespace DATN_Core.Entities
         public decimal Total { get; set; }  
         public DateTime TimeOrder { get; set; }
         public byte StatusOrder { get; set; }
-        public byte StatusDelivery { get; set; }
         public string PaymentMethod { get; set; }
         public int VoucherId { get; set; }
         public virtual Voucher Voucher { get; set; }

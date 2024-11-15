@@ -17,7 +17,6 @@ namespace DATN_Infrastructure.Data.Config
             builder.Property(x => x.Size).HasMaxLength(5);
             builder.Property(x => x.Price).HasColumnType("decimal(10,2)");
             builder.Property(x => x.Quantity);
-            builder.Property(x => x.Color).HasMaxLength(15);
             builder.Property(x => x.Gender).HasMaxLength(15);
             builder.Property(x => x.Status).HasMaxLength(15);
         }

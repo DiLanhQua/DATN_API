@@ -159,6 +159,27 @@ namespace DATN_Infrastructure.Data.migrate
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("DATN_Core.Entities.Color", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ColorCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("NameColor")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Color");
+                });
+
             modelBuilder.Entity("DATN_Core.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -281,9 +302,8 @@ namespace DATN_Infrastructure.Data.migrate
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(15)
@@ -307,6 +327,8 @@ namespace DATN_Infrastructure.Data.migrate
                         .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
 
                     b.HasIndex("ProductId");
 
@@ -403,9 +425,6 @@ namespace DATN_Infrastructure.Data.migrate
                     b.Property<string>("PaymentMethod")
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
-
-                    b.Property<byte>("StatusDelivery")
-                        .HasColumnType("tinyint");
 
                     b.Property<byte>("StatusOrder")
                         .HasColumnType("tinyint");
@@ -621,11 +640,19 @@ namespace DATN_Infrastructure.Data.migrate
 
             modelBuilder.Entity("DATN_Core.Entities.DetailProduct", b =>
                 {
+                    b.HasOne("DATN_Core.Entities.Color", "Color")
+                        .WithMany("DetailProduct")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DATN_Core.Entities.Product", "Product")
                         .WithMany("DetailProduct")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Color");
 
                     b.Navigation("Product");
                 });
@@ -758,6 +785,11 @@ namespace DATN_Infrastructure.Data.migrate
             modelBuilder.Entity("DATN_Core.Entities.Category", b =>
                 {
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("DATN_Core.Entities.Color", b =>
+                {
+                    b.Navigation("DetailProduct");
                 });
 
             modelBuilder.Entity("DATN_Core.Entities.DetailProduct", b =>

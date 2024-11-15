@@ -17,7 +17,6 @@ namespace DATN_Infrastructure.Data.Config
             builder.Property(x => x.Total).HasColumnType("decimal(10,2)");
             builder.Property(x => x.TimeOrder);
             builder.Property(x => x.StatusOrder);
-            builder.Property(x => x.StatusDelivery);
             builder.Property(x => x.PaymentMethod).HasMaxLength(25);
                 
         }
