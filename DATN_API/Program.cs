@@ -18,7 +18,17 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(i =>
 });
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine
-    (Directory.GetCurrentDirectory(), "wwwroot"))); 
+    (Directory.GetCurrentDirectory(), "wwwroot")));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") // Allow requests from localhost:3000
+               .AllowAnyHeader()                   // Allow any header
+               .AllowAnyMethod()                   // Allow any HTTP method
+               .AllowCredentials();                // Allow credentials (if needed)
+    });
+});
 
 var app = builder.Build();
 
@@ -31,7 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
