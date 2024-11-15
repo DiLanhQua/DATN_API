@@ -22,7 +22,7 @@ namespace DATN_API.Controllers
         [HttpGet("get-all-category")]
         public async Task<ActionResult> Get()
         {
-           var all_cate = await _uow.CategoryReponsitory.GetAllAsync();
+            var all_cate = await _uow.CategoryReponsitory.GetAllAsync();
             if(all_cate != null)
             {
                 var all_cate_list = all_cate.ToList();

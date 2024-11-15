@@ -4,6 +4,18 @@ using StackExchange.Redis;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost") // Cho phép t?t c? các c?ng c?a localhost
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -29,7 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowLocalhost");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
