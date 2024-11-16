@@ -1,6 +1,14 @@
+using DATN_Core.DTO;
+using DATN_Core.Entities;
+using DATN_Core.Interface;
+using DATN_Core.Sharing;
 using DATN_Infrastructure;
+using DATN_Infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
+using NETCore.MailKit.Core;
 using StackExchange.Redis;
+using System.Configuration;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +26,20 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(i =>
 });
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine
-    (Directory.GetCurrentDirectory(), "wwwroot"))); 
+    (Directory.GetCurrentDirectory(), "wwwroot")));
+builder.Services.Configure<EmailDTO>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmail, EmailReponsitory>();
+builder.Services.AddScoped<QrCoder>();
+builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("*")
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -30,6 +51,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
