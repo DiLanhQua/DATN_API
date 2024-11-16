@@ -40,20 +40,20 @@ namespace DATN_Infrastructure.Repository
                 await _context.SaveChangesAsync();
 
 
-            
+
 
                 return true;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync(); 
+                await transaction.RollbackAsync();
                 throw new Exception("Đã xảy ra lỗi khi thêm sản phẩm.", ex);
             }
         }
 
 
 
-      
+
 
         public async Task<bool> Deleteproduct(int id)
         {
@@ -74,21 +74,21 @@ namespace DATN_Infrastructure.Repository
 
             // Query products with related DetailProduct data included
             var query = _context.Products
-               
+
                 .AsNoTracking()
                 .AsQueryable();
 
-            
+
             if (!string.IsNullOrEmpty(brandParams.Search))
             {
                 string searchKeyword = brandParams.Search.ToLower();
                 query = query.Where(p => p.ProductName.ToLower().Contains(searchKeyword));
             }
 
-           
+
             result.TotalItems = await query.CountAsync();
 
-           
+
             result.Products = await query
                 .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
                 .Take(brandParams.Pagesize)
@@ -98,7 +98,7 @@ namespace DATN_Infrastructure.Repository
                     Description = p.Description,
                     CategoryId = p.CategoryId,
                     BrandId = p.BrandId,
-                  
+
                 })
                 .ToListAsync();
 
@@ -111,7 +111,7 @@ namespace DATN_Infrastructure.Repository
             try
             {
                 // Retrieve the main product and its existing details
-                var product = await _context.Products                  
+                var product = await _context.Products
                     .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (product == null)
@@ -125,7 +125,7 @@ namespace DATN_Infrastructure.Repository
                 product.CategoryId = ProDTO.CategoryId;
                 product.BrandId = ProDTO.BrandId;
 
-                
+
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

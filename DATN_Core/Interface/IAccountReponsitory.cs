@@ -15,6 +15,7 @@ namespace DATN_Core.Interface
     {
         Task<ReturnAccountDTO> GetAllAsync(Params brandParams);
         Task<bool> AddAccount(CreartAccount accountDTO);
+        Task<Account> Login(string username, string password);
         Task<bool> UpAccount(int idaccount, UpAccount upAccount);
         Task<AccountCT> GetDeAccount(int idaccount);
         Task<int> XNAccount(int idaccount);
