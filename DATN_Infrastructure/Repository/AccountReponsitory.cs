@@ -64,7 +64,7 @@ namespace DATN_Infrastructure.Repository
                 var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
                 var emailBody = new StringBuilder();
                 emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
-                emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none;'>Xác nhận tài khoản</a>");
+                emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 15px; height: 40px;'>Xác nhận tài khoản</a>");
 
                 await _email.SendEmail(nv.Email, "Xác nhận đăng ký", emailBody.ToString());
 
@@ -120,6 +120,17 @@ namespace DATN_Infrastructure.Repository
             var nv = await _context.Logins!.FirstOrDefaultAsync(a => a.AccountId == idaccount);
             return _mapper.Map<AccountCT>(nv);
         }
+
+        public async Task<Account> Login(string username, string password)
+        {
+            // Truy vấn cơ sở dữ liệu để kiểm tra tài khoản
+            return await _context.Accounts!
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserName == username && x.Password == password && x.Role == 1);
+        }
+
+
+
 
         public async Task<bool> UpAccount(int idaccount, UpAccount upAccount)
         {
@@ -195,5 +206,7 @@ namespace DATN_Infrastructure.Repository
 
             return tk.Id;
         }
+
+
     }
 }

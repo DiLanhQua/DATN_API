@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DATN_API.Controllers
 {
 
-    
+
 
 
     [Route("api/[controller]")]
@@ -40,14 +40,15 @@ namespace DATN_API.Controllers
         }
 
         [HttpPost("add-detailproduct")]
-        public async Task<ActionResult> AddDetailProduct([FromBody] ProductDetailDTO productDetailDTO)
+        public async Task<ActionResult> AddDetailProduct(ProductDetailDTO productDetailDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.DetailProductReponsitory.AddAsync(productDetailDTO);
-                    return res ? Ok(productDetailDTO) : BadRequest(res);
+                    var res = _mapper.Map<DetailProduct>(productDetailDTO);
+                    await _uow.DetailProductReponsitory.AddAsync(res);
+                    return Ok(res);
                 }
                 return BadRequest();
             }
@@ -56,7 +57,7 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
 
-           
+
         }
 
         [HttpPut("update-detailproduct-by-id/{id}")]

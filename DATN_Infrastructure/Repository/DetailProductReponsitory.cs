@@ -31,37 +31,40 @@ namespace DATN_Infrastructure.Repository
                 Size = ProDTO.Size,
                 Price = ProDTO.Price,
                 Quantity = ProDTO.Quantity,
+                ColorId = ProDTO.ColorId,
                 Gender = ProDTO.Gender,
                 Status = ProDTO.Status,
+
                 ProductId = ProDTO.ProductId
             };
 
-            using var consaction = await  _context.Database.BeginTransactionAsync();
+            using var consaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
                 await _context.DetailProducts.AddAsync(Productdetail);
                 await _context.SaveChangesAsync();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
 
                 await consaction.RollbackAsync();
                 throw new Exception("Đã xảy ra lỗi khi thêm sản phẩm.", ex);
             }
 
-           
-        
 
-       
-    
+
+
+
+
         }
 
         public async Task<bool> Deleteproduct(int id)
         {
             var query = await _context.DetailProducts.FindAsync(id);
 
-            if(query != null)
+            if (query != null)
             {
                 _context.DetailProducts.Remove(query);
                 await _context.SaveChangesAsync();
@@ -69,7 +72,7 @@ namespace DATN_Infrastructure.Repository
                 return true;
             }
             return false;
-            
+
         }
 
         public async Task<ReturnProductDetailDTO> GetAllAsync(Params brandParams)
@@ -77,7 +80,7 @@ namespace DATN_Infrastructure.Repository
             var result = new ReturnProductDetailDTO();
             var query = await _context.DetailProducts.AsNoTracking().ToListAsync();
 
-          
+
             query = query.Skip((brandParams.Pagesize) * (brandParams.PageNumber - 1)).Take(brandParams.Pagesize).ToList();
             result.Productdetail = _mapper.Map<List<ProductDetailDTO>>(query);
             result.TotalItems = query.Count;
@@ -101,6 +104,7 @@ namespace DATN_Infrastructure.Repository
                 exiting.Size = ProDTO.Size;
                 exiting.Price = ProDTO.Price;
                 exiting.Quantity = ProDTO.Quantity;
+                exiting.ColorId = ProDTO.ColorId;
                 exiting.Gender = ProDTO.Gender;
                 exiting.Status = ProDTO.Status;
                 exiting.ProductId = ProDTO.ProductId;
@@ -119,8 +123,8 @@ namespace DATN_Infrastructure.Repository
                 }
                 throw new Exception("An error occurred while updating the product.", ex);
             }
-            
-    
+
+
         }
     }
 }

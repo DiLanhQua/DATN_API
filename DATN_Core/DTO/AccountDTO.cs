@@ -62,4 +62,12 @@ namespace DATN_Core.DTO
         public int totalItems { get; set; }
         public List<AccountDTO> AccountsDTO { get; set; }
     }
+
+
+
+    public class LoginAccount
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
 }

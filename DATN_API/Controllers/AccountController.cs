@@ -89,5 +89,37 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] LoginAccount loginDto)
+        {
+            try
+            {
+                // Kiểm tra dữ liệu đầu vào
+                if (string.IsNullOrEmpty(loginDto.UserName) || string.IsNullOrEmpty(loginDto.Password))
+                {
+                    return BadRequest(new { Message = "Tài khoản và mật khẩu không được để trống." });
+                }
+
+                // Gọi repository để kiểm tra thông tin đăng nhập
+                var account = await _uow.AccountReponsitory.Login(loginDto.UserName, loginDto.Password);
+
+                if (account != null)
+                {
+                    // Nếu thông tin chính xác, trả về kết quả đăng nhập
+                    return Ok(new { Message = "Đăng nhập thành công.", Data = account });
+                }
+                else
+                {
+                    return Unauthorized(new { Message = "Tài khoản hoặc mật khẩu không chính xác." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Đã xảy ra lỗi trong quá trình đăng nhập.", Error = ex.Message });
+            }
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DATN_API.Helper;
+using DATN_Core.Entities;
 using DATN_Core.Interface;
 using DATN_Core.Sharing;
 using DATN_Infrastructure.Data.DTO;
@@ -20,14 +21,7 @@ namespace DATN_API.Controllers
             _uow = Uow;
             _mapper = mapper;
         }
-        //[HttpGet("get-all-product")]
-        //public async Task<ActionResult> Get([FromQuery] BrandParams brandParams)
-        //{
-        //    var src = await _uow.ProductReponsitory.GetAllAsync(brandParams);
-        //    var result = _mapper.Map<IReadOnlyList<ProductDetailDTO>>(src.Products);
-        //    return Ok(new Pagination<ProductDetailDTO>(brandParams.Pagesize, brandParams.PageNumber,
-        //        src.TotalItems, result));
-        //}
+
         [HttpGet("get-all-product")]
         public async Task<ActionResult> Get([FromQuery] Params brandParams)
         {
@@ -38,15 +32,25 @@ namespace DATN_API.Controllers
 
 
         [HttpPost("add-product")]
-        public async Task<ActionResult> Addproduct([FromBody] ProductDTO proDto)
+        public async Task<ActionResult> Addproduct(ProductDTO proDto)
         {
             try
             {
+                /* if (ModelState.IsValid)
+                 {
+                     var res = await _uow.ProductReponsitory.AddAsync(proDto);
+
+                     return res ? Ok(proDto) : BadRequest(res);
+
+
+                 }
+                 return BadRequest();*/
+
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.ProductReponsitory.AddAsync(proDto);
-
-                    return res ? Ok(proDto) : BadRequest(res);
+                    var res = _mapper.Map<Product>(proDto);
+                    await _uow.ProductReponsitory.AddAsync(res);
+                    return Ok(res);
                 }
                 return BadRequest();
             }
