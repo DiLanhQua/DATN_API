@@ -67,6 +67,8 @@ namespace DATN_Infrastructure.Repository
             EmailReponsitory = new EmailReponsitory(emailDTO);
             CartReponsitory = new CartReponsitory(_context, _mapper);
             ColorReponsitory = new ColorRepository(_context, _mapper);
+            CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);
+
 
         }
     }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DATN_API.Helper;
 using DATN_Core.Entities;
 using DATN_Core.Interface;
+using DATN_Core.Sharing;
 using DATN_Infrastructure.Data.DTO;
 using DATN_Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
@@ -20,65 +22,55 @@ namespace DATN_API.Controllers
             _mapper = mapper;
         }
         [HttpGet("get-all-category")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] Params brandParams)
         {
-           var all_cate = await _uow.CategoryReponsitory.GetAllAsync();
-            if(all_cate != null)
-            {
-                var all_cate_list = all_cate.ToList();
-
-                var res = _mapper.Map<IReadOnlyList<Category>,IReadOnlyList<ListCategoryDTO>>(all_cate_list);
-
-                return Ok(res);
-            }
-            return BadRequest("Not Found");
+            var src = await _uow.CategoryReponsitory.GetAllAsync(brandParams);
+            var result = _mapper.Map<IReadOnlyList<CataDTO>>(src.cataDTOs);
+            return Ok(new Pagination<CataDTO>(brandParams.Pagesize, brandParams.PageNumber, src.totalItems, result));
         }
+
+
         [HttpGet("get-category-by-id/{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var category = await _uow.CategoryReponsitory.GetAsync(id);
-            if (category == null)
+            var ct = await _uow.CategoryReponsitory.GetAsync(id);
+            if (ct == null)
             {
                 return BadRequest($"Not found id = [{id}]");
-                
+
 
             }
-            return Ok(_mapper.Map<Category,ListCategoryDTO>(category));
+            return Ok(_mapper.Map<Category, CataDTO>(ct));
         }
-        [HttpPost("add-category")]
-        public async Task<ActionResult> AddCategory(CategoryDTO categoryDto)
+
+        [HttpPost("add-catagory")]
+        public async Task<ActionResult> Addbrand([FromForm] CreateCatagoryDTO catagoryDTO)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    var res = _mapper.Map<Category>(categoryDto);                 
-                    await _uow.CategoryReponsitory.AddAsync(res);
-                    return Ok(res);
+                    var res = await _uow.CategoryReponsitory.AddAsync(catagoryDTO);
+
+                    return res ? Ok(catagoryDTO) : BadRequest(res);
                 }
                 return BadRequest();
-            } 
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
         [HttpPut("update-category-by-id/{id}")]
-        public async Task<ActionResult> UpdateCategory(int id,CategoryDTO categoryDto)
+        public async Task<ActionResult> Updatebrand(int id, UpdateCatagoryDTO updateCatagoryDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var cate = await _uow.CategoryReponsitory.GetAsync(id);
-                    if (cate != null)
-                    {
-                        //cate.CategoryName = categoryDto.CategoryName;
-                        //cate.Image = categoryDto.Image;
-                        _mapper.Map(categoryDto, cate);
-                    }
-                    await _uow.CategoryReponsitory.UpdateAsync(id, cate);
-                    return Ok(cate);
+                    var res = await _uow.CategoryReponsitory.UpdateAsync(id, updateCatagoryDTO);
+
+                    return res ? Ok(updateCatagoryDTO) : BadRequest(res);
                 }
                 return BadRequest($"Not Found Id [{id}]");
             }
@@ -88,7 +80,7 @@ namespace DATN_API.Controllers
             }
         }
         [HttpDelete("delete-category-by-id/{id}")]
-        public async Task<ActionResult> RemoveCategory(int id)
+        public async Task<ActionResult> Removebrand(int id)
         {
             try
             {
@@ -97,7 +89,7 @@ namespace DATN_API.Controllers
                     var cate = await _uow.CategoryReponsitory.GetAsync(id);
                     if (cate != null)
                     {
-                      await _uow.CategoryReponsitory.DeleteAsync(id);
+                        await _uow.CategoryReponsitory.DeleteAsync(id);
                     }
                     return Ok(cate);
                 }
