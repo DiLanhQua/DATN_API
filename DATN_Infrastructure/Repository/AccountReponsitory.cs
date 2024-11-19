@@ -61,10 +61,25 @@ namespace DATN_Infrastructure.Repository
                 _context.Logins.Add(login);
                 await _context.SaveChangesAsync();
 
-                var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
                 var emailBody = new StringBuilder();
                 emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
-                emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none;'>Xác nhận tài khoản</a>");
+                emailBody.AppendLine($"<br/><br/><a href='#' onclick='confirmAccount(\"{login.AccountId}\")' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none;'>Xác nhận tài khoản</a>");
+                emailBody.AppendLine("<script>");
+                emailBody.AppendLine("function confirmAccount(accountId) {");
+                emailBody.AppendLine("  fetch(`https://localhost:7048/api/Account/xn-account/${accountId}`, { method: 'POST' })");
+                emailBody.AppendLine("    .then(response => response.json())");
+                emailBody.AppendLine("    .then(data => {");
+                emailBody.AppendLine("      alert('Tài khoản đã được xác nhận thành công!');");
+                emailBody.AppendLine("      window.location.reload();");
+                emailBody.AppendLine("    })");
+                emailBody.AppendLine("    .catch(error => {");
+                emailBody.AppendLine("      console.error('Lỗi:', error);");
+                emailBody.AppendLine("      alert('Có lỗi xảy ra, vui lòng thử lại sau.');");
+                emailBody.AppendLine("    });");
+                emailBody.AppendLine("}");
+                emailBody.AppendLine("</script>");
+
+
 
                 await _email.SendEmail(nv.Email, "Xác nhận đăng ký", emailBody.ToString());
 
