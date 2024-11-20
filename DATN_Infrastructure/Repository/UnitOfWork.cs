@@ -34,6 +34,13 @@ namespace DATN_Infrastructure.Repository
 
         public IProductReponsitory ProductReponsitory { get; }
         public IAccountReponsitory AccountReponsitory { get; }
+<<<<<<< Updated upstream
+=======
+
+        public IColorReponsitory ColorReponsitory { get; }
+
+        public IMediaReponsitory MediaReponsitory { get; }
+>>>>>>> Stashed changes
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher)
         {
             _context = context;
@@ -48,6 +55,14 @@ namespace DATN_Infrastructure.Repository
             ProductReponsitory = new ProductReponsitory(_context);
             AccountReponsitory = new AccountReponsitory(_context, _mapper, _passwordHasher, _email,_qrCoder);
             EmailReponsitory = new EmailReponsitory(emailDTO);
+<<<<<<< Updated upstream
+=======
+            CartReponsitory = new CartReponsitory(_context, _mapper);
+            ColorReponsitory = new ColorRepository(_context, _mapper);
+            CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);
+            MediaReponsitory = new MediaReponsitory(context, _mapper);
+
+>>>>>>> Stashed changes
         }
     }
 }

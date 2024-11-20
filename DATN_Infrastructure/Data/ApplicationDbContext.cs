@@ -22,7 +22,7 @@ namespace DATN_Infrastructure.Data
         public virtual DbSet<DetailProduct> DetailProducts { get; set; }
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
-        public virtual DbSet<Media> Medium { get; set; }
+        public virtual DbSet<Media> Medias { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Voucher> Vouchers { get; set; }

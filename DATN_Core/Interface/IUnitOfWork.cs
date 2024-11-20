@@ -15,5 +15,14 @@ namespace DATN_Core.Interface
         public IProductReponsitory ProductReponsitory { get; }
         public IAccountReponsitory AccountReponsitory { get; }
         public IEmail EmailReponsitory { get; }
+<<<<<<< Updated upstream
+=======
+
+        public IColorReponsitory ColorReponsitory { get; }
+
+        public IMediaReponsitory MediaReponsitory { get; }
+
+
+>>>>>>> Stashed changes
     }
 }

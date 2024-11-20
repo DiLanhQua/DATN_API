@@ -9,11 +9,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.migrate2
+namespace DATN_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< Updated upstream:DATN_Infrastructure/Migrations/20241021152518_update.Designer.cs
     [Migration("20241021152518_update")]
     partial class update
+========
+    [Migration("20241119060711_Create_ef_dat")]
+    partial class Create_ef_dat
+>>>>>>>> Stashed changes:DATN_Infrastructure/Migrations/20241119060711_Create_ef_dat.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

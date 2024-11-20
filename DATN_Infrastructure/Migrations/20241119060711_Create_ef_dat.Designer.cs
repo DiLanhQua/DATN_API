@@ -9,11 +9,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.migrate
+namespace DATN_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241021142929_in")]
-    partial class @in
+<<<<<<<< Updated upstream:DATN_Infrastructure/Migrations/20241021152518_update.Designer.cs
+    [Migration("20241021152518_update")]
+    partial class update
+========
+    [Migration("20241119060711_Create_ef_dat")]
+    partial class Create_ef_dat
+>>>>>>>> Stashed changes:DATN_Infrastructure/Migrations/20241119060711_Create_ef_dat.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,8 +47,8 @@ namespace DATN_Infrastructure.Data.migrate
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FullName")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -153,6 +158,9 @@ namespace DATN_Infrastructure.Data.migrate
                     b.Property<string>("CategoryName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -313,7 +321,7 @@ namespace DATN_Infrastructure.Data.migrate
                     b.ToTable("DetailProducts");
                 });
 
-            modelBuilder.Entity("DATN_Core.Entities.Images", b =>
+            modelBuilder.Entity("DATN_Core.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -372,9 +380,6 @@ namespace DATN_Infrastructure.Data.migrate
                     b.Property<int>("ImageId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ImagesId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("bit");
 
@@ -385,7 +390,7 @@ namespace DATN_Infrastructure.Data.migrate
 
                     b.HasIndex("BlogId");
 
-                    b.HasIndex("ImagesId");
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("ProductId");
 
@@ -652,9 +657,11 @@ namespace DATN_Infrastructure.Data.migrate
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DATN_Core.Entities.Images", "Images")
+                    b.HasOne("DATN_Core.Entities.Image", "Image")
                         .WithMany("Media")
-                        .HasForeignKey("ImagesId");
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DATN_Core.Entities.Product", "Product")
                         .WithMany("Media")
@@ -664,7 +671,7 @@ namespace DATN_Infrastructure.Data.migrate
 
                     b.Navigation("Blog");
 
-                    b.Navigation("Images");
+                    b.Navigation("Image");
 
                     b.Navigation("Product");
                 });
@@ -768,7 +775,7 @@ namespace DATN_Infrastructure.Data.migrate
                     b.Navigation("DetailOrder");
                 });
 
-            modelBuilder.Entity("DATN_Core.Entities.Images", b =>
+            modelBuilder.Entity("DATN_Core.Entities.Image", b =>
                 {
                     b.Navigation("Media");
                 });
