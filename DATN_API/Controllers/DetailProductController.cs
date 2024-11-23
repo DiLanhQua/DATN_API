@@ -39,12 +39,20 @@ namespace DATN_API.Controllers
 
 
         }
+<<<<<<< Updated upstream
         
         [HttpGet("get-detailproduct/{idproduct}")]
         public async Task<ActionResult> GetProductDetail(int idproduct)
         {
             var result = await _uow.DetailProductReponsitory.GetDetailProduct(idproduct);
             if (result == null || !result.Any())
+=======
+        [HttpGet("get-detailproduct/{productid}")]
+        public async Task<ActionResult> GetDetailProduct(int productid)
+        {
+            var result = await _uow.DetailProductReponsitory.GetProductDetail(productid);
+            if (result == null)
+>>>>>>> Stashed changes
             {
                 return NotFound(new { message = "No detail products found for the given product ID." });
             }

@@ -11,8 +11,12 @@ namespace DATN_API.Mappers
             
             CreateMap<DetailProduct, ProductDetailDTO>().ReverseMap();
             CreateMap<ProductDetailDTO,DetailProduct >().ReverseMap();
+<<<<<<< Updated upstream
             CreateMap<DetailProduct, DetailProduct>();
 
+=======
+            CreateMap<DetailProduct, ProductDetailDE>().ReverseMap();
+>>>>>>> Stashed changes
 
 
         }

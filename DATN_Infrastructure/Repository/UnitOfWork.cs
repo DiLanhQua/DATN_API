@@ -40,6 +40,9 @@ namespace DATN_Infrastructure.Repository
         public IColorReponsitory ColorReponsitory { get; }
 
         public IMediaReponsitory MediaReponsitory { get; }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher)
         {

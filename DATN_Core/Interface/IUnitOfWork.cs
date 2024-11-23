@@ -19,6 +19,10 @@ namespace DATN_Core.Interface
 =======
 
         public IColorReponsitory ColorReponsitory { get; }
+<<<<<<< Updated upstream
+=======
+        public IMediaReponsitory MediaReponsitory { get; }
+>>>>>>> Stashed changes
 
         public IMediaReponsitory MediaReponsitory { get; }
 

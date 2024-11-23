@@ -21,11 +21,19 @@ namespace DATN_API.Controllers
         public async Task<ActionResult> Medias(int idproduct)
         {
             var result = await _uow.MediaReponsitory.GetMedia(idproduct);
+<<<<<<< Updated upstream
             if (result == null )
+=======
+            if (result == null)
+>>>>>>> Stashed changes
             {
                 return NotFound(new { message = "No detail products found for the given product ID." });
             }
             return Ok(result);
         }
+<<<<<<< Updated upstream
+=======
+        
+>>>>>>> Stashed changes
     }
 }

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+<<<<<<< Updated upstream
 using DATN_Core.DTO;
+=======
+>>>>>>> Stashed changes
 using DATN_Core.Entities;
 using DATN_Core.Interface;
 using DATN_Infrastructure.Data;
@@ -16,7 +19,11 @@ namespace DATN_Infrastructure.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+<<<<<<< Updated upstream
         public MediaReponsitory (ApplicationDbContext context, IMapper mapper) : base (context)
+=======
+        public MediaReponsitory(ApplicationDbContext context, IMapper mapper) : base(context)
+>>>>>>> Stashed changes
         {
             _context = context;
             _mapper = mapper;
@@ -24,7 +31,11 @@ namespace DATN_Infrastructure.Repository
 
         public async Task<Media> GetMedia(int idproduct)
         {
+<<<<<<< Updated upstream
             var query = await _context.Medias.FirstOrDefaultAsync(p => p.ProductId == idproduct);
+=======
+            var query = await _context.Medium.FirstOrDefaultAsync(p => p.ProductId == idproduct);
+>>>>>>> Stashed changes
 
             return _mapper.Map<Media>(query);
         }

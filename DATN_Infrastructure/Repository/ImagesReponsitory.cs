@@ -56,7 +56,10 @@ namespace DATN_Infrastructure.Repository
             }
             return false;
         }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         public async Task<ImageDeDTO> GetImage(int idproduct)
         {
             var query = await _context.Images.FirstOrDefaultAsync(p => p.Id == idproduct);

@@ -14,7 +14,11 @@ namespace DATN_API.Helper
             _configuration = configuration;
         }
 
+<<<<<<< Updated upstream
         public string Resolve(Image source, ImageDeDTO destination, string destMember, ResolutionContext context)
+=======
+        public string Resolve(Image source, ImageDeDTO destination,string destMember, ResolutionContext context)
+>>>>>>> Stashed changes
         {
             if (!string.IsNullOrEmpty(source.Link))
             {

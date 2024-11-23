@@ -13,7 +13,12 @@ namespace DATN_Core.Interface
     {
 
         Task<ReturnProductDetailDTO> GetAllAsync(Params brandParams);
+<<<<<<< Updated upstream
         Task<List<DetailProduct>> GetDetailProduct(int idproduct);
+=======
+
+        Task<List<ProductDetailDE>> GetProductDetail(int productid);
+>>>>>>> Stashed changes
         Task<bool> AddAsync(ProductDetailDTO ProDTO);
         Task<bool> UpdateAsync(int id, ProductDetailDTO ProDTO);
         Task<bool> Deleteproduct(int id);

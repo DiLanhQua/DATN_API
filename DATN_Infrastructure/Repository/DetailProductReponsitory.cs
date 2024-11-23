@@ -88,10 +88,17 @@ namespace DATN_Infrastructure.Repository
 
         }
 
+<<<<<<< Updated upstream
         public async Task<List<DetailProduct>> GetDetailProduct(int idproduct)
         {
             var query = await _context.DetailProducts.Where(p => p.ProductId == idproduct).ToListAsync();
             return _mapper.Map<List<DetailProduct>>(query);
+=======
+        public async Task<List<ProductDetailDE>> GetProductDetail(int productid)
+        {
+            var query = await _context.DetailProducts.Where(p => p.ProductId == productid).ToListAsync();
+            return _mapper.Map<List<ProductDetailDE>>(query);
+>>>>>>> Stashed changes
         }
 
         public async Task<bool> UpdateAsync(int id, ProductDetailDTO ProDTO)

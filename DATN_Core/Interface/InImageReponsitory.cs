@@ -11,7 +11,11 @@ namespace DATN_Core.Interface
 {
     public interface InImageReponsitory: IGenericeReponsitory<Image>
     {
+<<<<<<< Updated upstream
         Task<bool> AddAsync(CreateImageDTO brandDTO);
+=======
+        Task<bool> AddAsync(CreateImageDTO brandDTO); 
+>>>>>>> Stashed changes
         Task<ImageDeDTO> GetImage(int idproduct);
     }
 }
