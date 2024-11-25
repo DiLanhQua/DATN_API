@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DATN_Core.DTO;
 using DATN_Core.Entities;
 using DATN_Infrastructure.Data.DTO;
 
@@ -17,6 +18,9 @@ namespace DATN_API.Mappers
 
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<ProductDTO, Product > ().ReverseMap();
+            CreateMap<Product, ProductDEDTO>().ReverseMap(); 
+            CreateMap<ProductDEDTO, Product>().ReverseMap();
+            CreateMap<Product, ProductDEDTO>().ReverseMap();
 
         }
     }

@@ -5,7 +5,7 @@ using DATN_Infrastructure.Data.DTO;
 
 namespace DATN_API.Helper
 {
-    public class ImageResolver : IValueResolver<Image, ImageDTO, string>
+    public class ImageResolver : IValueResolver<Image, ImageDeDTO, string>
     {
 
         private readonly IConfiguration _configuration;
@@ -14,7 +14,7 @@ namespace DATN_API.Helper
             _configuration = configuration;
         }
 
-        public string Resolve(Image source, ImageDTO destination, string destMember, ResolutionContext context)
+        public string Resolve(Image source, ImageDeDTO destination,string destMember, ResolutionContext context)
         {
             if (!string.IsNullOrEmpty(source.Link))
             {

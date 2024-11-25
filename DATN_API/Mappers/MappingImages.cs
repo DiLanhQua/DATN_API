@@ -11,7 +11,10 @@ namespace DATN_API.Mappers
     {
         public MappingImages()
         {
-            CreateMap<Image, ImageDTO>()           
+            //CreateMap<Image, ImageDTO>()           
+            // .ForMember(b => b.Link, o => o.MapFrom<ImageResolver>())
+            // .ReverseMap();
+            CreateMap<Image, ImageDeDTO>()
              .ForMember(b => b.Link, o => o.MapFrom<ImageResolver>())
              .ReverseMap();
             CreateMap<CreateImageDTO, Image>().ReverseMap();

@@ -22,6 +22,7 @@ namespace DATN_Infrastructure.Data.Config
             builder.Property(x => x.Address).HasMaxLength(100);
             builder.Property(x => x.Role);
             builder.Property(x => x.Image);
+            builder.Property(x => x.Status);
         }
     }
 }

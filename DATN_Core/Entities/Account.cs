@@ -17,6 +17,7 @@ namespace DATN_Core.Entities
         public string Address { get; set; } = string.Empty;
         public byte Role { get; set; } 
         public string Image {  get; set; } = string.Empty;
+        public int Status { get; set; }
         public virtual ICollection<Login> Login { get; set; } = new HashSet<Login>();
         public virtual ICollection<Order> Order { get; set; } = new HashSet<Order>();
         public virtual ICollection<Cart> Cart { get; set; } = new HashSet<Cart>();
