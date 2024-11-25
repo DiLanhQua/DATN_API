@@ -28,8 +28,4 @@
     <ProjectReference Include="..\DATN_Core\DATN_Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrate\" />
-  </ItemGroup>
-
 </Project>

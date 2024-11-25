@@ -10,7 +10,7 @@ namespace DATN_Core.Entities
     {
         //public int Id { get; set; }
         public string Link { get; set; } = string.Empty;
-        public  virtual ICollection<Media> Media { get; set; } = new HashSet<Media>();
+        public virtual ICollection<Media> Media { get; set; } = new HashSet<Media>();
 
     }
 }

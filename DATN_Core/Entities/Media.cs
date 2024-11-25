@@ -10,11 +10,11 @@ namespace DATN_Core.Entities
     {
         //public int Id { get; set; }
         public bool IsPrimary { get; set; }
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
         public virtual Product Product { get; set; }
-        public int BlogId { get; set; }
+        public int? BlogId { get; set; }
         public virtual Blog Blog { get; set; }
-        public int ImageId { get; set; }
+        public int? ImagesId { get; set; }
         public virtual Image Image { get; set; }
 
     }

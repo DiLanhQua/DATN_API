@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.migrate
+namespace DATN_Infrastructure.Data.Migrate
 {
     /// <inheritdoc />
-    public partial class @in : Migration
+    public partial class reupdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,10 +21,11 @@ namespace DATN_Infrastructure.Data.migrate
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Role = table.Column<byte>(type: "tinyint", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,11 +53,26 @@ namespace DATN_Infrastructure.Data.migrate
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Colors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameColor = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ColorCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Colors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +210,6 @@ namespace DATN_Infrastructure.Data.migrate
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     TimeOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StatusOrder = table.Column<byte>(type: "tinyint", nullable: false),
-                    StatusDelivery = table.Column<byte>(type: "tinyint", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
                     VoucherId = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false)
@@ -253,14 +268,20 @@ namespace DATN_Infrastructure.Data.migrate
                     Size = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Status = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ColorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DetailProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DetailProducts_Colors_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "Colors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DetailProducts_Products_ProductId",
                         column: x => x.ProductId,
@@ -276,10 +297,10 @@ namespace DATN_Infrastructure.Data.migrate
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    BlogId = table.Column<int>(type: "int", nullable: false),
-                    ImageId = table.Column<int>(type: "int", nullable: false),
-                    ImagesId = table.Column<int>(type: "int", nullable: true)
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    BlogId = table.Column<int>(type: "int", nullable: true),
+                    ImagesId = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -288,19 +309,17 @@ namespace DATN_Infrastructure.Data.migrate
                         name: "FK_Medium_Blogs_BlogId",
                         column: x => x.BlogId,
                         principalTable: "Blogs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Medium_Images_ImagesId",
-                        column: x => x.ImagesId,
+                        name: "FK_Medium_Images_ImageId",
+                        column: x => x.ImageId,
                         principalTable: "Images",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Medium_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -454,6 +473,11 @@ namespace DATN_Infrastructure.Data.migrate
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DetailProducts_ColorId",
+                table: "DetailProducts",
+                column: "ColorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DetailProducts_ProductId",
                 table: "DetailProducts",
                 column: "ProductId");
@@ -469,9 +493,9 @@ namespace DATN_Infrastructure.Data.migrate
                 column: "BlogId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Medium_ImagesId",
+                name: "IX_Medium_ImageId",
                 table: "Medium",
-                column: "ImagesId");
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medium_ProductId",
@@ -547,6 +571,9 @@ namespace DATN_Infrastructure.Data.migrate
 
             migrationBuilder.DropTable(
                 name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Colors");
 
             migrationBuilder.DropTable(
                 name: "Products");

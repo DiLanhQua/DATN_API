@@ -80,9 +80,9 @@ namespace DATN_Infrastructure.Repository
                         var media = new Media
                         {
                             IsPrimary = true,
-                            BlogId = 1,
+                            BlogId = null,
                             ProductId = productId,
-                            ImageId = image.Id
+                            ImagesId = image.Id
                         };
 
                         _context.Medium.Add(media);
@@ -224,7 +224,7 @@ namespace DATN_Infrastructure.Repository
                     var existingMedia = await _context.Medium
                         .FirstOrDefaultAsync(em => em.ProductId == id);
                     var existingimgae = await _context.Images
-                        .FirstOrDefaultAsync(em => em.Id == existingMedia.ImageId);
+                        .FirstOrDefaultAsync(em => em.Id == existingMedia.ImagesId);
                     if (existingMedia != null)
                     {
                         existingimgae.Link = mediaDto.Link;
@@ -245,7 +245,7 @@ namespace DATN_Infrastructure.Repository
                             IsPrimary = mediaDto.IsPrimary,
                             BlogId = 1, // assuming this is correct and needed
                             ProductId = id,
-                            ImageId = newImage.Id
+                            ImagesId = newImage.Id
                         };
                         _context.Medium.Add(newMedia);
 

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.migrate
+namespace DATN_Infrastructure.Data.Migrate
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -391,16 +391,19 @@ namespace DATN_Infrastructure.Data.migrate
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BlogId")
+                    b.Property<int?>("BlogId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ImageId")
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ImagesId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -675,21 +678,15 @@ namespace DATN_Infrastructure.Data.migrate
                 {
                     b.HasOne("DATN_Core.Entities.Blog", "Blog")
                         .WithMany("Media")
-                        .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BlogId");
 
                     b.HasOne("DATN_Core.Entities.Image", "Image")
                         .WithMany("Media")
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ImageId");
 
                     b.HasOne("DATN_Core.Entities.Product", "Product")
                         .WithMany("Media")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Blog");
 
