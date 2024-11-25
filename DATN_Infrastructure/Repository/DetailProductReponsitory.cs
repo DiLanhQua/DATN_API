@@ -88,7 +88,11 @@ namespace DATN_Infrastructure.Repository
 
         }
 
-
+        public async Task<List<ProductDetailDE>> GetProductDetail(int productid)
+        {
+            var query = await _context.DetailProducts.Where(p => p.ProductId == productid).ToListAsync();
+            return _mapper.Map<List<ProductDetailDE>>(query);
+        }
 
         public async Task<bool> UpdateAsync(int id, ProductDetailDTO ProDTO)
         {

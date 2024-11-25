@@ -44,6 +44,7 @@ namespace DATN_Infrastructure.Repository
 
         public IColorReponsitory ColorReponsitory { get; }
 
+        public IMediaReponsitory MediaReponsitory { get; }
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher)
         {
             _context = context;
@@ -68,6 +69,7 @@ namespace DATN_Infrastructure.Repository
             CartReponsitory = new CartReponsitory(_context, _mapper);
             ColorReponsitory = new ColorRepository(_context, _mapper);
             CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);
+            MediaReponsitory = new MediaReponsitory(context, _mapper);
 
 
         }

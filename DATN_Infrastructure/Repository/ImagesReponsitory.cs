@@ -56,5 +56,10 @@ namespace DATN_Infrastructure.Repository
             }
             return false;
         }
+        public async Task<ImageDeDTO> GetImage(int idproduct)
+        {
+            var query = await _context.Images.FirstOrDefaultAsync(p => p.Id == idproduct);
+            return _mapper.Map<ImageDeDTO>(query);
+        }
     }
 }

@@ -13,6 +13,11 @@ namespace DATN_Core.DTO
 
         public string Link { get; set; }
     }
+    public class ImageDeDTO
+    {
+        public int Id { get; set; }
+        public string Link { get; set; }
+    }
     public class CreateImageDTO 
     {
         public IFormFile Picture { get; set; }

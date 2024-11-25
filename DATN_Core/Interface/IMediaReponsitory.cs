@@ -11,6 +11,6 @@ namespace DATN_Core.Interface
 {
     public interface IMediaReponsitory : IGenericeReponsitory<Media>
     {
-
+        Task<Media> GetMedia(int idproduct);
     }
 }

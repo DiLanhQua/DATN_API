@@ -38,7 +38,16 @@ namespace DATN_API.Controllers
 
 
         }
-
+        [HttpGet("get-detailproduct/{productid}")]
+        public async Task<ActionResult> GetDetailProduct(int productid)
+        {
+            var result = await _uow.DetailProductReponsitory.GetProductDetail(productid);
+            if (result == null)
+            {
+                return NotFound(new { message = "No detail products found for the given product ID." });
+            }
+            return Ok(result);
+        }
         [HttpPost("add-detailproduct")]
         public async Task<ActionResult> AddDetailProduct(ProductDetailDTO productDetailDTO)
         {

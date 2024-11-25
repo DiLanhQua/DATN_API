@@ -25,7 +25,7 @@ namespace DATN_Core.Interface
         public IEmail EmailReponsitory { get; }
 
         public IColorReponsitory ColorReponsitory { get; }
-    
+        public IMediaReponsitory MediaReponsitory { get; }
 
     }
 }

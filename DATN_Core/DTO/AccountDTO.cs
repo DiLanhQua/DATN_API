@@ -9,6 +9,7 @@ namespace DATN_Core.DTO
 {
     public class AccountDTO
     {
+        public int Id { get; set; }
         public string UserName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -21,7 +22,7 @@ namespace DATN_Core.DTO
 
     public class AccountCT
     {
-        
+
         public string Action { get; set; } = string.Empty;
 
         public DateTime TimeStamp { get; set; }

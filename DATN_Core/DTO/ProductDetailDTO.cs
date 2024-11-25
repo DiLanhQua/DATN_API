@@ -18,6 +18,18 @@ namespace DATN_Core.DTO
         public int ProductId { get; set; }
 
     }
+    public class ProductDetailDE
+    {
+        public int Id { get; set; }
+        public string Size { get; set; } = string.Empty;
+        public int Price { get; set; }
+        public int Quantity { get; set; }
+        public int ColorId { get; set; }
+        public string Gender { get; set; }
+        public string Status { get; set; }
+        public int ProductId { get; set; }
+
+    }
 
     public class ReturnProductDetailDTO
     {
