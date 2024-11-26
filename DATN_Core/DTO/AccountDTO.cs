@@ -18,6 +18,8 @@ namespace DATN_Core.DTO
         public string Address { get; set; } = string.Empty;
         public byte Role { get; set; }
         public string Image { get; set; }
+
+        public int Status {  get; set; }
     }
 
     public class AccountCT

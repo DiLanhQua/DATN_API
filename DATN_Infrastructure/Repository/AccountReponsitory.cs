@@ -181,13 +181,24 @@ namespace DATN_Infrastructure.Repository
         public async Task<int> XNAccount(int idaccount)
         {
            var tk = await _context.Logins!.FirstOrDefaultAsync(a => a.AccountId == idaccount);
+            var ac = await _context.Accounts!.FirstOrDefaultAsync(a => a.Id == idaccount);
+            var account = await _context.Accounts!.FirstOrDefaultAsync(a => a.Id == idaccount);
             if (tk == null)
             {
                 throw new Exception("Tài khoản không tồn tại");
             }
+            if (account == null)
+            {
+                throw new Exception("Tài khoản không tồn tại");
+            }
+
+            
             tk.Action = "Hoạt Động";
             tk.TimeStamp = DateTime.Now;
+            ac.Status = 1;
             tk.Description = "Đã xác nhận tài khoản";
+
+            account.Status = 1;
             _context.Logins.Update(tk);
             await _context.SaveChangesAsync();
 
@@ -207,6 +218,55 @@ namespace DATN_Infrastructure.Repository
             return tk.Id;
         }
 
+        public async Task<bool> BlockAccount(int id)
+        {
+            try
+            {
+                // Lấy tài khoản từ cơ sở dữ liệu theo AccountId
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+                if (account == null)
+                {
+                    throw new Exception("Tài khoản không tồn tại.");
+                }
 
+                // Cập nhật trạng thái tài khoản từ giá trị Status trong DTO
+                account.Status = 2;  // Cập nhật trạng thái tài khoản
+
+                // Cập nhật vào cơ sở dữ liệu
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Đã xảy ra lỗi khi cấm tài khoản.", ex);
+            }
+        }
+        public async Task<bool> UnBlockAccount(int id)
+        {
+            try
+            {
+                // Lấy tài khoản từ cơ sở dữ liệu theo AccountId
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+                if (account == null)
+                {
+                    throw new Exception("Tài khoản không tồn tại.");
+                }
+
+                // Cập nhật trạng thái tài khoản từ giá trị Status trong DTO
+                account.Status = 1;  // Cập nhật trạng thái tài khoản
+
+                // Cập nhật vào cơ sở dữ liệu
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Đã xảy ra lỗi khi un lock tài khoản.", ex);
+            }
+        }
     }
 }

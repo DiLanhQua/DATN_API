@@ -27,5 +27,7 @@ namespace DATN_Core.Interface
         public IColorReponsitory ColorReponsitory { get; }
         public IMediaReponsitory MediaReponsitory { get; }
 
+        public ILoginReponsitory LoginReponsitory { get; }
+
     }
 }

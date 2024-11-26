@@ -120,6 +120,49 @@ namespace DATN_API.Controllers
                 return StatusCode(500, new { Message = "Đã xảy ra lỗi trong quá trình đăng nhập.", Error = ex.Message });
             }
         }
+        [HttpPost("block-account/{id}")]
+        public async Task<ActionResult> BlockAccount(int id)
+        {
+            try
+            {
+                // Gọi phương thức BlockAccount từ repository và truyền DTO BanAccount
+                var result = await _uow.AccountReponsitory.BlockAccount(id);
 
+                if (result)
+                {
+                    return Ok(new { Message = "Tài khoản đã bị cấm thành công." });
+                }
+                else
+                {
+                    return BadRequest("Không thể cấm tài khoản.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("un-block-account/{id}")]
+        public async Task<ActionResult> UnBlockAccount(int id)
+        {
+            try
+            {
+                // Gọi phương thức BlockAccount từ repository và truyền DTO BanAccount
+                var result = await _uow.AccountReponsitory.UnBlockAccount(id);
+
+                if (result)
+                {
+                    return Ok(new { Message = "Tài khoản đã được mở khóa thành công." });
+                }
+                else
+                {
+                    return BadRequest("Không thể mở khóa tài khoản.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

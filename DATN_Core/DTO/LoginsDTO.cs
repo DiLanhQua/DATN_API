@@ -11,7 +11,6 @@ namespace DATN_Core.DTO
 
         public string Action { get; set; } = string.Empty;
 
-        public DateTime TimeStamp { get; set; }
 
         public string Description { get; set; } = "";
 
@@ -28,5 +27,29 @@ namespace DATN_Core.DTO
         public string Description { get; set; } = "";
 
         public int AccountId { get; set; }
+    }
+
+    public class ReturnLogin
+    {
+        public int totalItems { get; set; }
+        public List<ListLoginsDTO> ListLogins { get; set; } = new List<ListLoginsDTO>();
+    }
+
+    public class LoginAccountUser
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+
+    public class RegisterDTO
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public byte Role { get; set; } 
     }
 }

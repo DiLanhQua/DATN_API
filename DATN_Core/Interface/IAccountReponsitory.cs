@@ -19,5 +19,7 @@ namespace DATN_Core.Interface
         Task<bool> UpAccount(int idaccount, UpAccount upAccount);
         Task<AccountCT> GetDeAccount(int idaccount);
         Task<int> XNAccount(int idaccount);
+        Task<bool> BlockAccount(int id);
+        Task<bool> UnBlockAccount(int id);
     }
 }
