@@ -4,6 +4,7 @@ using DATN_Core.Entities;
 using DATN_Core.Interface;
 using DATN_Core.Sharing;
 using DATN_Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,6 +31,28 @@ namespace DATN_Infrastructure.Repository
             _passwordHasher = passwordHasher;
             _email = email;
             _qrCoder = qrCoder;
+        }
+
+        public async Task<ProfileDTO> GetByIdAsync(int id)
+        {
+            var query = await _context.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            if (query == null)
+            {
+                return null;
+            }
+            var result = new ProfileDTO
+            {
+               
+                FullName = query.FullName,
+                UserName = query.UserName,
+                Email = query.Email,
+                Phone = query.Phone,
+                Address = query.Address,
+                Status = query.Status,
+                Password = query.Password,
+
+            };
+            return result;
         }
 
         public async Task<bool> AddAsync(LoginsDTO loginDTO)
@@ -108,6 +131,12 @@ namespace DATN_Infrastructure.Repository
         }
 
 
+       
+
+
+       
+
+
         //Đăng ký
         public async Task<bool> RegisterAsync(RegisterDTO registerDTO)
         {
@@ -119,6 +148,7 @@ namespace DATN_Infrastructure.Repository
                 Email = registerDTO.Email,
                 Password = registerDTO.Password,
                 Role = registerDTO.Role,
+
                 Address = registerDTO.Address,
                 Image = "Image.png",
             };
@@ -137,7 +167,7 @@ namespace DATN_Infrastructure.Repository
                 _context.Logins.Add(login);
                 await _context.SaveChangesAsync();
 
-                var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
+                var maxn = $"https://localhost:7048/api/Login/xn-account/{login.AccountId}";
                 var emailBody = new StringBuilder();
                 emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
                 emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 15px; height: 40px;'>Xác nhận tài khoản</a>");
@@ -173,7 +203,7 @@ namespace DATN_Infrastructure.Repository
             tk.Description = "Đã xác nhận tài khoản";
 
             account.Status = 1;
-            _context.Accounts.Add(account);
+            _context.Accounts.Update(account);
             _context.Logins.Update(tk);
             await _context.SaveChangesAsync();
 
@@ -191,6 +221,32 @@ namespace DATN_Infrastructure.Repository
             await _email.SendEmailAsync(nv.Email, "Xác nhận đăng ký", emailBody.ToString(), qrCodeImage, qrCodeFileName);
 
             return tk.Id;
+        }
+
+        public Task<bool> UpdateProfileAsync(int id, UpProfile upprofile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> CreartImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+            var up = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/account");
+            var filename = Path.GetFileName(file.FileName);
+            var accountName = $"{Guid.NewGuid()}_{filename}";
+            var filePath = Path.Combine(up, accountName);
+            if (!Directory.Exists(up))
+            {
+                Directory.CreateDirectory(up);
+            }
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            return $"images/account/{accountName}";
         }
     }
 }

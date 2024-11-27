@@ -10,6 +10,8 @@ namespace DATN_API.Mappers
         {
             CreateMap<Login, LoginsDTO>().ReverseMap();
             CreateMap<Login, ListLoginsDTO>().ReverseMap();
+            CreateMap<Account, UpProfile>().ReverseMap();
+            CreateMap<UpProfile, Account>().ReverseMap();
         }
     }
 }

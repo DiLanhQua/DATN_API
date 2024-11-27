@@ -15,5 +15,9 @@ namespace DATN_Core.Interface
         Task<ReturnLogin> GetAllAsync(Params LoginParams);
         Task<bool> AddAsync(LoginsDTO loginDTO);
         Task<bool> RegisterAsync(RegisterDTO registerDTO);
+        Task<bool> UpdateProfileAsync(int id, UpProfile upprofile);
+        Task<ProfileDTO> GetByIdAsync(int id);
+        Task<int> XNAccount(int id);
+
     }
 }

@@ -2,6 +2,7 @@
 using DATN_Core.DTO;
 using DATN_Core.Interface;
 using DATN_Core.Sharing;
+using DATN_Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,18 @@ namespace DATN_API.Controllers
             _mapper = mapper;
         }
 
+
+        [HttpGet("get-login-by-id/{id}")]
+        public async Task<ActionResult> Get(int id)
+        {
+            var query = await _uow.LoginReponsitory.GetByIdAsync(id);
+            if (query == null)
+            {
+                return BadRequest($"Không tìm thấy thông tin này");
+            }
+            return Ok(query);
+
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginAccountUser loginAccount)
@@ -82,6 +95,43 @@ namespace DATN_API.Controllers
                     return res ? Ok(registerDTO) : BadRequest(res);
                 }
                 return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut("up-profile/{accountId}")]
+        public async Task<IActionResult> UpdateProfile(int accountId, [FromForm] UpProfile updateRequest)
+        {
+            try
+            {
+                var isUpdated = await _uow.LoginReponsitory.UpdateProfileAsync(accountId, updateRequest);
+                if (isUpdated)
+                {
+                    return Ok(new { message = "Cập nhật thông tin thành công!" });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Cập nhật không thành công!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+
+        [HttpPost("xn-account/{idaccount}")]
+        public async Task<ActionResult> XNAccount(int idaccount)
+        {
+            try
+            {
+                await _uow.AccountReponsitory.XNAccount(idaccount);
+
+                return Ok(new { Message = "Xác nhận thành công" });
             }
             catch (Exception ex)
             {

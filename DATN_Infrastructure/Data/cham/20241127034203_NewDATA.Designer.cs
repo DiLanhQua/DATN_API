@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DATN_Infrastructure.Data.cham
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241125163153_Cham_addNew")]
-    partial class Cham_addNew
+    [Migration("20241127034203_NewDATA")]
+    partial class NewDATA
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

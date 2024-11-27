@@ -5,7 +5,7 @@
 namespace DATN_Infrastructure.Data.cham
 {
     /// <inheritdoc />
-    public partial class Cham_addNew : Migration
+    public partial class NewDATA : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
