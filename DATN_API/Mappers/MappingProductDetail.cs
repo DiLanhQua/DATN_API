@@ -13,6 +13,7 @@ namespace DATN_API.Mappers
             CreateMap<DetailProduct, ProductDetailDTO>().ReverseMap();
             CreateMap<ProductDetailDTO,DetailProduct >().ReverseMap(); 
             CreateMap<DetailProduct, ProductDetailDE>().ReverseMap();
+            CreateMap<ProductDetailDE, DetailProduct>().ReverseMap();
 
 
         }

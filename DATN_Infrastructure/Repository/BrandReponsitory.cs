@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace DATN_Infrastructure.Repository
 {
@@ -50,9 +51,33 @@ namespace DATN_Infrastructure.Repository
                 var res = _mapper.Map<Brand>(brandDTO);
                 res.Image = $"/images/brand/{brandName}";
 
-                await _context.Brands.AddAsync(res);
-                await _context.SaveChangesAsync();
-                return true;
+               
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    await _context.Brands.AddAsync(res);
+                    await _context.SaveChangesAsync();
+
+                    // Log the add action
+                    var log = new Login
+                    {
+                        
+                        Action = "Thêm Brand",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Brand '{brandDTO.BrandName}' đã được tạo."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+               
             }
             return false;
         }
@@ -115,9 +140,33 @@ namespace DATN_Infrastructure.Repository
 
                 // Cập nhật các thuộc tính khác từ brandDTO
                 _mapper.Map(brandDTO, currentBrand);
-                _context.Brands.Update(currentBrand);
-                await _context.SaveChangesAsync();
-                return true;
+               
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Brands.Update(currentBrand);
+                    await _context.SaveChangesAsync();
+
+                    // Log the add action
+                    var log = new Login
+                    {
+                        AccountId = 2,
+                        Action = "Sửa Brand",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Brand '{brandDTO.BrandName}, {brandDTO.Country},{brandDTO.oldImage}' đã được sửa." //test cai nay di o
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+                
             }
 
             return false;

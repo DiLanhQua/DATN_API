@@ -8,6 +8,13 @@ namespace DATN_Core.DTO
 {
     public class ColorDTO
     {
+        public string Id { get; set; }
+        public string NameColor { get; set; }
+
+        public string ColorCode { get; set; }
+    }
+    public class ColorAdd
+    {
         public string NameColor { get; set; }
 
         public string ColorCode { get; set; }

@@ -14,7 +14,7 @@ namespace DATN_Core.Interface
         Task<ReturnProductDTO> GetAllAsync(Params brandParams);
         Task<ProductDEDTO> GetProduct(int id);
         Task<bool> AddProduct(ProductDTO ProDTO);
-        Task<bool> UpdateProduct(int id, ProductDTO productDTO);
+        Task<bool> UpdateProduct(int id, ProductUPDTO productUP);
         Task<bool> Deleteproduct(int id);
        
     }

@@ -47,7 +47,14 @@ namespace DATN_Infrastructure.Data.DTO
         public int BrandId { get; set; }
 
     }
+    public class ProductUPDTO
+    {
+        public string ProductName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+        public int BrandId { get; set; }
 
+    }
     public class ReturnProductDTO
     {
         public int TotalItems { get; set; }

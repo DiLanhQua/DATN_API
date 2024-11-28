@@ -11,7 +11,8 @@ namespace DATN_API.Mappers
         public MappingColor() { 
             CreateMap<Color, ColorDTO>().ReverseMap();
             CreateMap<ColorDTO, Color>().ReverseMap();
-        
+            CreateMap<ColorAdd, Color>().ReverseMap();
+
         }
     }
 }

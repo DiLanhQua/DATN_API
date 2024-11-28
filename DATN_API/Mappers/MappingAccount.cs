@@ -15,7 +15,7 @@ namespace DATN_API.Mappers
             .ForMember(b => b.Image, o => o.MapFrom<AccountResolver>())
             .ReverseMap();
 
-            CreateMap<AccountCT, Login>().ReverseMap();
+            CreateMap<LoginCT, Login>().ReverseMap();
         }
     }
 }

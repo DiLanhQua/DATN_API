@@ -25,7 +25,7 @@ namespace DATN_Core.DTO
         }
         public class UpdateOrder
         {
-            public int StatusOrder { get; set; }
+        public int StatusOrder { get; set; }
         }
         public class ReturnOrder
         {

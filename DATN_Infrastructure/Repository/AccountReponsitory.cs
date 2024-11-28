@@ -64,8 +64,7 @@ namespace DATN_Infrastructure.Repository
                 var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
                 var emailBody = new StringBuilder();
                 emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
-                emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 15px; height: 40px;'>Xác nhận tài khoản</a>");
-
+                emailBody.AppendLine($"<br/><br/><a href=\"{maxn}\" style=\"padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none;\">Xác nhận tài khoản</a>");
                 await _email.SendEmail(nv.Email, "Xác nhận đăng ký", emailBody.ToString());
 
                 await transaction.CommitAsync();
@@ -115,10 +114,15 @@ namespace DATN_Infrastructure.Repository
             return result;
         }
 
-        public async Task<AccountCT> GetDeAccount(int idaccount)
+        public async Task<LoginCT> GetDeLogin(int idaccount)
         {
             var nv = await _context.Logins!.FirstOrDefaultAsync(a => a.AccountId == idaccount);
-            return _mapper.Map<AccountCT>(nv);
+            return _mapper.Map<LoginCT>(nv);
+        }
+        public async Task<AccountDTO> GetDeAccount(int idaccount)
+        {
+            var nv = await _context.Accounts!.FirstOrDefaultAsync(a => a.Id == idaccount);
+            return _mapper.Map<AccountDTO>(nv);
         }
 
         public async Task<Account> Login(string username, string password)

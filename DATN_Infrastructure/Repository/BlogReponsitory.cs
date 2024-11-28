@@ -30,9 +30,32 @@ namespace DATN_Infrastructure.Repository
                 var mediaEntity = _mapper.Map<Blog>(blogDTO);
                 mediaEntity.AccountId = blogDTO.AccountId;
 
-                await _context.Blogs.AddAsync(mediaEntity);
-                await _context.SaveChangesAsync();
-                return true;
+               
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    await _context.Blogs.AddAsync(mediaEntity);
+                    await _context.SaveChangesAsync();
+
+                    // Log the add action
+                    var log = new Login
+                    {
+                        AccountId = blogDTO.AccountId, // Example: account that performed the action, change as needed
+                        Action = "Thêm Blog",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Blog '{blogDTO.Content}' đã được tạo."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
             }
             return false;
         }
@@ -46,6 +69,7 @@ namespace DATN_Infrastructure.Repository
             return result;
 
 
+
         }
         public async Task<bool> UpdateAsync(int id, UpdateDTO BlogDTO)
         {
@@ -54,9 +78,32 @@ namespace DATN_Infrastructure.Repository
             if (currentBrand != null)
             {
                 _mapper.Map(BlogDTO, currentBrand);
-                _context.Blogs.Update(currentBrand);
-                await _context.SaveChangesAsync();
-                return true;
+               
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Blogs.Update(currentBrand);
+                   await _context.SaveChangesAsync();
+
+                    // Log the add action
+                   var log = new Login
+                    {
+                        AccountId = BlogDTO.AccountId, // Example: account that performed the action, change as needed
+                        Action = "Update Blog",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Update Blog '{BlogDTO.Content}' đã được tạo."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
             }
 
             return false;

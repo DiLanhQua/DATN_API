@@ -5,6 +5,7 @@ using DATN_Core.Interface;
 using DATN_Core.Sharing;
 using DATN_Infrastructure.Data;
 using DATN_Infrastructure.Data.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,17 @@ namespace DATN_Infrastructure.Repository
                     }).ToList();
 
                     _context.DetailProducts.AddRange(productDetails);
+                    var log = new Login
+                    {
+                        AccountId = 3, // Example: account that performed the action, change as needed
+                        Action = "Thêm Product",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Product '{productDTO.ProductName}' đã được tạo."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                  
+                    await transaction.CommitAsync();
                     await _context.SaveChangesAsync();
                 }
                 else
@@ -70,22 +82,27 @@ namespace DATN_Infrastructure.Repository
                 {
                     foreach (var mediaDto in productDTO.Medias)
                     {
-                        
-                            var image = new Image { Link = mediaDto.Link };
-                            _context.Images.Add(image);
-                            await _context.SaveChangesAsync();  // Save the image to get image.Id
 
-
-                        // Thêm media liên kết với sản phẩm
-                        var media = new Media
+                        var imageLink = await CreateImage(mediaDto.Link); 
+                        if (!string.IsNullOrEmpty(imageLink))
                         {
-                            IsPrimary = true,
-                            BlogId = null,
-                            ProductId = productId,
-                            ImagesId = image.Id
-                        };
+                            var image = new Image { Link = imageLink };
+                            _context.Images.Add(image);
+                            await _context.SaveChangesAsync(); 
 
-                        _context.Medium.Add(media);
+                            var media = new Media
+                            {
+                                IsPrimary = mediaDto.IsPrimary,
+                                BlogId = null,
+                                ProductId = productId,
+                                ImagesId = image.Id
+                            };
+
+                            _context.Medium.Add(media);
+                        }  
+
+
+                        
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -104,6 +121,32 @@ namespace DATN_Infrastructure.Repository
                 throw;
             }
         }
+        public async Task<string> CreateImage(string base64String)
+        {
+            if (string.IsNullOrEmpty(base64String))
+            {
+                return null;
+            }
+
+            // Xử lý chuỗi base64 và loại bỏ tiền tố "data:image/jpeg;base64," nếu có
+            var base64Data = base64String.Split(',')[1];
+            var imageBytes = Convert.FromBase64String(base64Data);
+
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/products");
+            var fileName = $"{Guid.NewGuid()}.jpg"; // Đặt tên file ngẫu nhiên với định dạng .jpg
+            var filePath = Path.Combine(uploadFolder, fileName);
+
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            // Lưu hình ảnh vào thư mục
+            await File.WriteAllBytesAsync(filePath, imageBytes);
+
+            return $"images/products/{fileName}";
+        }
+
 
 
         public async Task<bool> Deleteproduct(int id)
@@ -163,7 +206,7 @@ namespace DATN_Infrastructure.Repository
         .FirstOrDefaultAsync(p => p.Id == id);
             return _mapper.Map<ProductDEDTO>(query);
         }
-        public async Task<bool> UpdateProduct(int id, ProductDTO productDTO)
+        public async Task<bool> UpdateProduct(int id, ProductUPDTO productUP)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -176,84 +219,24 @@ namespace DATN_Infrastructure.Repository
                     throw new Exception($"Product with ID {id} not found.");
                 }
 
-                // Cập nhật thuộc tính sản phẩm
-                product.ProductName = productDTO.ProductName;
-                product.Description = productDTO.Description;
-                product.CategoryId = productDTO.CategoryId;
-                product.BrandId = productDTO.BrandId;
+                product.ProductName = productUP.ProductName;
+                product.Description = productUP.Description;
+                product.CategoryId = productUP.CategoryId;
+                product.BrandId = productUP.BrandId;
+                var log = new Login
+                {
+                    AccountId = 3, // Example: account that performed the action, change as needed
+                    Action = "Sửa Sản Phẩm",
+                    TimeStamp = DateTime.Now,
+                    Description = $"Sản Phẩm '{productUP.ProductName},{productUP.Description},{productUP.CategoryId},{productUP.BrandId}' đã được sửa."
+                };
 
+                await _context.Logins.AddAsync(log);
+              
+                await transaction.CommitAsync();
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
 
-                foreach (var detailDTO in productDTO.ProductDetais)
-                {
-                    var existingDetail = await _context.DetailProducts
-                        .FirstOrDefaultAsync(p => p.ProductId == id );
-
-                    if (existingDetail != null)
-                    {
-                        existingDetail.Size = detailDTO.Size;
-                        existingDetail.Price = detailDTO.Price;
-                        existingDetail.Quantity = detailDTO.Quantity;
-                        existingDetail.ColorId = detailDTO.ColorId;
-                        existingDetail.Gender = detailDTO.Gender;
-                        existingDetail.Status = detailDTO.Status;
-
-                        _context.DetailProducts.Update(existingDetail);
-                    }
-                    else
-                    {
-                        var newDetail = productDTO.ProductDetais.Select(detail => new DetailProduct
-                        {
-                            Size = detail.Size,
-                            Price = detail.Price,
-                            Quantity = detail.Quantity,
-                            ColorId = detail.ColorId,
-                            Gender = detail.Gender,
-                            Status = detail.Status,
-                            ProductId = id
-                        }).ToList();
-                        _context.DetailProducts.AddRange(newDetail);
-                    }
-
-                }
-
-                // Cập nhật media
-                foreach (var mediaDto in productDTO.Medias)
-                {
-                    var existingMedia = await _context.Medium
-                        .FirstOrDefaultAsync(em => em.ProductId == id);
-                    var existingimgae = await _context.Images
-                        .FirstOrDefaultAsync(em => em.Id == existingMedia.ImagesId);
-                    if (existingMedia != null)
-                    {
-                        existingimgae.Link = mediaDto.Link;
-                        existingMedia.IsPrimary = mediaDto.IsPrimary;
-
-                        _context.Images.Update(existingimgae);
-
-                        _context.Medium.Update(existingMedia);
-                    }
-                    else
-                    {
-                        var newImage = new Image { Link = mediaDto.Link };
-                        _context.Images.Add(newImage);
-                        await _context.SaveChangesAsync();
-
-                        var newMedia = new Media
-                        {
-                            IsPrimary = mediaDto.IsPrimary,
-                            BlogId = 1, // assuming this is correct and needed
-                            ProductId = id,
-                            ImagesId = newImage.Id
-                        };
-                        _context.Medium.Add(newMedia);
-
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return true;
             }
@@ -264,6 +247,7 @@ namespace DATN_Infrastructure.Repository
                 throw;
             }
         }
+
 
     }
 }

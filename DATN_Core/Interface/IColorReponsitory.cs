@@ -13,7 +13,7 @@ namespace DATN_Core.Interface
     {
 
         public Task<ReturnColorDTO> GetAllAsync(Params colorParams);
-        public Task<bool> AddColor(ColorDTO colordto);
+        public Task<bool> AddColor(ColorAdd colordto);
         public Task<bool> UpdateColor(int id, ColorDTO colordto);
         public Task<bool> DeleteColor(int id);
     }

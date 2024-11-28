@@ -93,8 +93,13 @@ namespace DATN_Infrastructure.Repository
             var query = await _context.DetailProducts.Where(p => p.ProductId == productid).ToListAsync();
             return _mapper.Map<List<ProductDetailDE>>(query);
         }
+        public async Task<ProductDetailDE> GetDetail(int id,int productid)
+        {
+            var query = await _context.DetailProducts.FirstOrDefaultAsync(p => p.Id == id && p.ProductId == productid);
+            return _mapper.Map<ProductDetailDE>(query);
+        }
 
-        public async Task<bool> UpdateAsync(int id, ProductDetailDTO ProDTO)
+        public async Task<bool> UpdateAsync(int id,int idproduct, ProductDetailUP ProDTO)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -111,7 +116,7 @@ namespace DATN_Infrastructure.Repository
                 exiting.ColorId = ProDTO.ColorId;
                 exiting.Gender = ProDTO.Gender;
                 exiting.Status = ProDTO.Status;
-                exiting.ProductId = ProDTO.ProductId;
+                exiting.ProductId = idproduct;
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

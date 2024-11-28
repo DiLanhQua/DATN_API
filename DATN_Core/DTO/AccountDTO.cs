@@ -21,7 +21,17 @@ namespace DATN_Core.DTO
 
         public int Status {  get; set; }
     }
+    public class LoginCT
+    {
 
+        public string Action { get; set; } = string.Empty;
+
+        public DateTime TimeStamp { get; set; }
+
+        public string Description { get; set; } = "";
+
+        public int AccountId { get; set; }
+    }
     public class AccountCT
     {
 

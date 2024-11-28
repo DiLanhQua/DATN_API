@@ -25,7 +25,7 @@ namespace DATN_Infrastructure.Repository
             _mapper = mapper;
         }
 
-        public async Task<bool> AddColor(ColorDTO colordto)
+        public async Task<bool> AddColor(ColorAdd colordto)
         {
             var Createcolor = new Color
             {
@@ -36,7 +36,16 @@ namespace DATN_Infrastructure.Repository
             using var Transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-               
+                 var log = new Login
+           {
+               AccountId = 3, // Example: account that performed the action, change as needed
+               Action = "Thêm Color",
+               TimeStamp = DateTime.Now,
+               Description = $"Color '{colordto.NameColor}' đã được sửa."
+           };
+
+           await _context.Logins.AddAsync(log);
+          
                 await _context.Colors.AddAsync(Createcolor);
                 await _context.SaveChangesAsync();
                 return true;

@@ -36,7 +36,7 @@ namespace DATN_API.Controllers
         }
 
         [HttpPost("add-color")]
-        public async Task<ActionResult> AddColor(ColorDTO colorDto)
+        public async Task<ActionResult> AddColor(ColorAdd colorDto)
         {
             try
             {

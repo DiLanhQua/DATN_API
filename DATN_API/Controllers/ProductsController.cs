@@ -42,37 +42,39 @@ namespace DATN_API.Controllers
         }
 
         [HttpPost("add-product")]
-        public async Task<ActionResult> Addproduct([FromBody] ProductDTO proDto)
+        public async Task<ActionResult> AddProduct([FromBody] ProductDTO proDto)
         {
             try
             {
-                /* if (ModelState.IsValid)
-                 {
-                     var res = await _uow.ProductReponsitory.AddAsync(proDto);
-
-                     return res ? Ok(proDto) : BadRequest(res);
-
-
-                 }
-                 return BadRequest();*/
-
                 if (ModelState.IsValid)
                 {
                     var res = await _uow.ProductReponsitory.AddProduct(proDto);
 
-                    return Ok(res);
+                    if (res)
+                    {
+                        return Ok(new { message = "Sản phẩm đã được thêm thành công!" });
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Có lỗi xảy ra khi thêm sản phẩm." });
+                    }
                 }
-                return BadRequest();
+                else
+                {
+                    return BadRequest(new { message = "Dữ liệu đầu vào không hợp lệ.", errors = ModelState });
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Trả về thông báo lỗi chi tiết khi có ngoại lệ
+                return BadRequest(new { message = "Có lỗi xảy ra", details = ex.Message });
             }
         }
-        
-        
+
+
+
         [HttpPut("UP-product/{id}")]
-        public async Task<ActionResult> Upproduct(int id, ProductDTO proDto)
+        public async Task<ActionResult> Upproduct(int id, [FromForm] ProductUPDTO proDto)
         {
             try
             {

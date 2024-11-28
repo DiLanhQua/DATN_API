@@ -28,12 +28,19 @@ namespace DATN_API.Controllers
             return Ok(new Pagination<AccountDTO>(brandParams.Pagesize, brandParams.PageNumber,
                 src.totalItems, result));
         }
-        [HttpGet("getDe-account/{idaccount}")]
-        public async Task<AccountCT> GetDeAccount(int idaccount)
+        [HttpGet("getDe-login/{idaccount}")]
+        public async Task<LoginCT> GetDeLogin(int idaccount)
         {
-                var result = await _uow.AccountReponsitory.GetDeAccount(idaccount);
+            var result = await _uow.AccountReponsitory.GetDeLogin(idaccount);
 
-                return result;
+            return result;
+        }
+        [HttpGet("getDe-account/{idaccount}")]
+        public async Task<AccountDTO> GetDeAccount(int idaccount)
+        {
+            var result = await _uow.AccountReponsitory.GetDeAccount(idaccount);
+
+            return result;
         }
         [HttpPost("add-account")]
         public async Task<ActionResult> AddAccount([FromForm]CreartAccount accountDTO)
@@ -75,7 +82,7 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("xn-account/{idaccount}")]
+        [HttpGet("xn-account/{idaccount}")]
         public async Task<ActionResult> XNAccount(int idaccount)
         {
             try

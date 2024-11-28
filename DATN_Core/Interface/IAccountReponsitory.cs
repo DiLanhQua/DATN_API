@@ -17,7 +17,8 @@ namespace DATN_Core.Interface
         Task<bool> AddAccount(CreartAccount accountDTO);
         Task<Account> Login(string username, string password);
         Task<bool> UpAccount(int idaccount, UpAccount upAccount);
-        Task<AccountCT> GetDeAccount(int idaccount);
+        Task<LoginCT> GetDeLogin(int idaccount);
+        Task<AccountDTO> GetDeAccount(int idaccount);
         Task<int> XNAccount(int idaccount);
         Task<bool> BlockAccount(int id);
         Task<bool> UnBlockAccount(int id);

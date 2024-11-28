@@ -48,6 +48,16 @@ namespace DATN_API.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("get-detail")]
+        public async Task<ActionResult> GetDetailP(int id,int productid)
+        {
+            var result = await _uow.DetailProductReponsitory.GetDetail(id,productid);
+            if (result == null)
+            {
+                return NotFound(new { message = "No detail products found for the given product ID." });
+            }
+            return Ok(result);
+        }
         [HttpPost("add-detailproduct")]
         public async Task<ActionResult> AddDetailProduct(ProductDetailDTO productDetailDTO)
         {
@@ -69,14 +79,14 @@ namespace DATN_API.Controllers
 
         }
 
-        [HttpPut("update-detailproduct-by-id/{id}")]
-        public async Task<ActionResult> UpdateDetailProduct(int id, ProductDetailDTO productDetailDTO)
+        [HttpPut("update-detailproduct-by-id")]
+        public async Task<ActionResult> UpdateDetailProduct(int id, int idproduct, ProductDetailUP productDetailDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.DetailProductReponsitory.UpdateAsync(id, productDetailDTO);
+                    var res = await _uow.DetailProductReponsitory.UpdateAsync(id, idproduct, productDetailDTO);
                     return res ? Ok(productDetailDTO) : BadRequest(res);
                 }
                 return BadRequest($"Không tìm thấy id: {id}");

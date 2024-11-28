@@ -49,9 +49,33 @@ namespace DATN_Infrastructure.Repository
                 var res = _mapper.Map<Category>(CatagoryDTO);
                 res.Image = $"/images/brand/{cataName}";
 
-                await _context.Categories.AddAsync(res);
-                await _context.SaveChangesAsync();
-                return true;
+                
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    await _context.Categories.AddAsync(res);
+                    await _context.SaveChangesAsync();
+
+                    // Log the add action
+                    var log = new Login
+                    {
+                        AccountId = 100, // Example: account that performed the action, change as needed
+                        Action = "Thêm Category",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Category '{CatagoryDTO.CategoryName}' đã được tạo."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+               
             }
             return false;
         }
@@ -114,9 +138,33 @@ namespace DATN_Infrastructure.Repository
 
                 // Cập nhật các thuộc tính khác từ brandDTO
                 _mapper.Map(catagoryDTO, currentBrand);
-                _context.Categories.Update(currentBrand);
-                await _context.SaveChangesAsync();
-                return true;
+                
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Categories.Update(currentBrand);
+                    await _context.SaveChangesAsync();
+
+                    // Log the add action
+                    var log = new Login
+                    {
+                        AccountId = 100, // Example: account that performed the action, change as needed
+                        Action = "Sửa Category",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Category '{catagoryDTO.CategoryName},{catagoryDTO.oldImage},{catagoryDTO.Picture}' đã được sửa."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+                
             }
 
             return false;

@@ -34,38 +34,70 @@ namespace DATN_Infrastructure.Repository
                 VoucherId = orderDTO.VoucherId,
                 AccountId = orderDTO.AccountId,
             };
-            using var transaction = _context.Database.BeginTransaction();
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-
                 _context.Orders.Add(or);
                 await _context.SaveChangesAsync();
 
                 await _context.SaveChangesAsync();
 
+                // Log the add action
+                var log = new Login
+                {
+                    AccountId = orderDTO.AccountId, // Example: account that performed the action, change as needed
+                    Action = "Thêm Order",
+                    TimeStamp = DateTime.Now,
+                    Description = $"Order '{orderDTO.ID}' đã được tạo."
+                };
+
+                await _context.Logins.AddAsync(log);
+                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-
-
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                _context.Database.RollbackTransaction();
-                throw new Exception("Đã xảy ra lỗi khi thêm đơn hàng.", ex);
-
+                await transaction.RollbackAsync();
+                return false;
             }
+           
         }
 
         public async Task<bool> UpdateOrder(int id, UpdateOrder orderDTO)
         {
+
             var or = await _context.Orders.FindAsync(id);
             if (or != null)
             {
                 or.StatusOrder = (byte)orderDTO.StatusOrder;
 
-                _context.Orders.Update(or);
-                await _context.SaveChangesAsync();
-                return true;
+              
+                
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Orders.Update(or);
+                    await _context.SaveChangesAsync();
+                    // Log the add action
+                    var log = new Login
+                    {
+                        AccountId =8, // Example: account that performed the action, change as needed
+                        Action = "Thêm Order",
+                        TimeStamp = DateTime.Now,
+                        Description = $"Order '{orderDTO.StatusOrder}' đã được sửa."
+                    };
+
+                    await _context.Logins.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
             }
             return false;
         }
