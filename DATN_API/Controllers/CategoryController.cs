@@ -62,7 +62,7 @@ namespace DATN_API.Controllers
             }
         }
         [HttpPut("update-category-by-id/{id}")]
-        public async Task<ActionResult> Updatebrand(int id, UpdateCatagoryDTO updateCatagoryDTO)
+        public async Task<ActionResult> Updatebrand([FromForm] UpdateCatagoryDTO updateCatagoryDTO, int id)
         {
             try
             {
@@ -87,6 +87,7 @@ namespace DATN_API.Controllers
                 if (ModelState.IsValid)
                 {
                     var cate = await _uow.CategoryReponsitory.GetAsync(id);
+
                     if (cate != null)
                     {
                         await _uow.CategoryReponsitory.DeleteAsync(id);

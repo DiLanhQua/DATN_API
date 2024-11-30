@@ -62,7 +62,7 @@ namespace DATN_API.Controllers
             }
         }
         [HttpPut("update-brand-by-id/{id}")]
-        public async Task<ActionResult> Updatebrand(int id, UpdateBrandDTO updateBrandDTO)
+        public async Task<ActionResult> Updatebrand([FromForm] UpdateBrandDTO updateBrandDTO, int id)
         {
             try
             {

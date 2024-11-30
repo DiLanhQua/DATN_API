@@ -61,7 +61,7 @@ namespace DATN_Infrastructure.Repository
                     // Log the add action
                     var log = new Login
                     {
-                        
+                        AccountId = 1,   
                         Action = "Thêm Brand",
                         TimeStamp = DateTime.Now,
                         Description = $"Brand '{brandDTO.BrandName}' đã được tạo."

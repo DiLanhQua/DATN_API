@@ -59,7 +59,7 @@ namespace DATN_Infrastructure.Repository
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 100, // Example: account that performed the action, change as needed
+                        AccountId = 1, // Example: account that performed the action, change as needed
                         Action = "Thêm Category",
                         TimeStamp = DateTime.Now,
                         Description = $"Category '{CatagoryDTO.CategoryName}' đã được tạo."
@@ -148,7 +148,7 @@ namespace DATN_Infrastructure.Repository
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 100, // Example: account that performed the action, change as needed
+                        AccountId = 1, // Example: account that performed the action, change as needed
                         Action = "Sửa Category",
                         TimeStamp = DateTime.Now,
                         Description = $"Category '{catagoryDTO.CategoryName},{catagoryDTO.oldImage},{catagoryDTO.Picture}' đã được sửa."
