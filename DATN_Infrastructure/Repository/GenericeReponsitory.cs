@@ -26,7 +26,7 @@ namespace DATN_Infrastructure.Repository
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await _context.Set<T>().FindAsync();
+            var entity = await _context.Set<T>().FindAsync(id);
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }

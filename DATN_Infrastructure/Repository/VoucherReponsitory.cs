@@ -48,7 +48,7 @@ namespace DATN_Infrastructure.Repository
                 // Log the add action
                 var log = new Login
                 {
-                    AccountId = 3, // Example: account that performed the action, change as needed
+                    AccountId = 1, // Example: account that performed the action, change as needed
                     Action = "Thêm Voucher",
                     TimeStamp = DateTime.Now,
                     Description = $"Voucher '{voucher.VoucherName}' đã được tạo."

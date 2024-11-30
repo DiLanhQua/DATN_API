@@ -61,7 +61,7 @@ namespace DATN_Infrastructure.Repository
                     _context.DetailProducts.AddRange(productDetails);
                     var log = new Login
                     {
-                        AccountId = 3, // Example: account that performed the action, change as needed
+                        AccountId = 1, // Example: account that performed the action, change as needed
                         Action = "Thêm Product",
                         TimeStamp = DateTime.Now,
                         Description = $"Product '{productDTO.ProductName}' đã được tạo."
@@ -225,7 +225,7 @@ namespace DATN_Infrastructure.Repository
                 product.BrandId = productUP.BrandId;
                 var log = new Login
                 {
-                    AccountId = 3, // Example: account that performed the action, change as needed
+                    AccountId = 1, // Example: account that performed the action, change as needed
                     Action = "Sửa Sản Phẩm",
                     TimeStamp = DateTime.Now,
                     Description = $"Sản Phẩm '{productUP.ProductName},{productUP.Description},{productUP.CategoryId},{productUP.BrandId}' đã được sửa."
@@ -237,7 +237,6 @@ namespace DATN_Infrastructure.Repository
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
 
-                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception ex)
