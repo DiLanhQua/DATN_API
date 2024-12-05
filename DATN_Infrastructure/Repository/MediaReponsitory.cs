@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DATN_Core.DTO;
 using DATN_Core.Entities;
 using DATN_Core.Interface;
 using DATN_Infrastructure.Data;
@@ -28,13 +29,26 @@ namespace DATN_Infrastructure.Repository
 
             return _mapper.Map<Media>(query);
         }
-        public async Task<List<Media>> GetALLMedia(int idproduct)
+        public async Task<List<ImageDeDTO>> GetALLMedia(int idproduct)
         {
-            var query = await _context.Medium.Where(p => p.ProductId == idproduct).ToListAsync();
+            var query = await _context.Medium
+                            .Where(a => a.ProductId == idproduct)
+                            .Join(
+                                _context.Images,
+                                medium => medium.ImagesId,
+                                image => image.Id,
+                                (medium, image) => new ImageDeDTO
+                                {
+                                    Id = medium.Id,
+                                    IsImage = medium.IsPrimary,
+                                    Link = image.Link
+                                }
+                            )
+                            .ToListAsync();
 
-            return _mapper.Map<List<Media>>(query);
+            return _mapper.Map<List<ImageDeDTO>>(query);
         }
-        public async Task<bool> AddMedia(int productId, MediaADD mediaAdd)
+        public async Task<Image> AddMedia(int productId, MediaADD mediaAdd)
         {
             var imageLink = await CreateImage(mediaAdd.Link);
             if (!string.IsNullOrEmpty(imageLink))
@@ -70,16 +84,19 @@ namespace DATN_Infrastructure.Repository
                     await _context.Logins.AddAsync(log);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-                    return true;
+                    return image;
                 }
                 catch
                 {
                     await transaction.RollbackAsync();
-                    return false;
+                    return null;
                 }
 
             }
-            return true;
+            return new Image
+            {
+                Link = imageLink
+            };
 
         }
         public async Task<bool> SetPrimaryImage(int productId, int imageId)

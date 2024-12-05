@@ -50,9 +50,9 @@ namespace DATN_API.Controllers
                     var res = await _uow.MediaReponsitory.AddMedia(productId,mediaAdd);
 
                     // Trả về kết quả theo kiểu ActionResult
-                    if (res)
+                    if (res != null)
                     {
-                        return Ok(new { message = "Media đã được thêm thành công!" });
+                        return Ok(new { Data = res});
                     }
                     else
                     {

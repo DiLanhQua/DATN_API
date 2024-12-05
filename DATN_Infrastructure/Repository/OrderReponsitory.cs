@@ -145,6 +145,7 @@ namespace DATN_Infrastructure.Repository
                     2 => "processing",
                     3 => "shipped",
                     4 => "completed",
+                    5 => "cancelled",
                     _ => "cancelled"
                 }
             }).ToList();
@@ -162,20 +163,28 @@ namespace DATN_Infrastructure.Repository
         public async Task<List<OrderUserDtos>> GetOrderByIdUser(int idUser)
         {
             List<Order> orders = await _context.Orders.Where(a => a.AccountId == idUser)
-                                .Include(a => a.DeliveryAddress)
-                                .Include(a => a.Account).Include(a => a.DetailOrder)
+                                .Include(a => a.Account)
+                                .Include(a => a.DetailOrder)
                                 .ToListAsync();
 
-            List<OrderUserDtos> result = orders.Select(item => new OrderUserDtos
-            {
-                Id = item.Id,
-                OrderCode = $"DH{item.Id.ToString().PadLeft(4, '0')}",
-                FullName = item.Account.FullName,
-                NumberPhone = item.DeliveryAddress.FirstOrDefault(a => a.OrderId == item.Id).Phone,
-                Status = item.StatusOrder,
-                Address = item.DeliveryAddress.FirstOrDefault(a => a.OrderId == item.Id).Address,
-            }).ToList();
+            List<OrderUserDtos> result = new List<OrderUserDtos>();
 
+            foreach (var item in  orders)
+            {
+                DeliveryAddress deliveryAddress = await _context.DeliveryAddresses.FirstOrDefaultAsync(a => a.OrderId == item.Id);
+
+                OrderUserDtos order = new OrderUserDtos
+                {
+                    Id = item.Id,
+                    OrderCode = $"DH{item.Id.ToString().PadLeft(4, '0')}",
+                    FullName = item.Account.FullName,
+                    NumberPhone = deliveryAddress.Phone ?? "Không có",
+                    Status = item.StatusOrder,
+                    Address = deliveryAddress.Address ?? "Không có"
+                };
+
+                result.Add(order);
+            }
             return result;
         }
 

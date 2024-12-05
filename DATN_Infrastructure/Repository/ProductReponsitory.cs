@@ -175,6 +175,19 @@ namespace DATN_Infrastructure.Repository
                 .AsNoTracking()
                 .AsQueryable();
 
+            var primaryImages = await _context.Medium
+               .Where(m => m.IsPrimary == true && m.ImagesId != null)
+               .Join(
+                   _context.Images,
+                   medium => medium.ImagesId.Value, // Đảm bảo ImagesId không null
+                   image => image.Id,
+                   (medium, image) => new
+                   {
+                       ProductId = medium.ProductId,
+                       ImageLink = image.Link
+                   }
+               )
+               .ToDictionaryAsync(x => x.ProductId, x => x.ImageLink);
 
             if (!string.IsNullOrEmpty(brandParams.Search))
             {
@@ -196,6 +209,7 @@ namespace DATN_Infrastructure.Repository
                     Description = p.Description,
                     CategoryId = p.CategoryId,
                     BrandId = p.BrandId,
+                    ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null
 
                 })
                 .ToListAsync();

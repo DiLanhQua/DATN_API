@@ -17,7 +17,6 @@ namespace DATN_Core.DTO
     {
         public int Id { get; set; }
         public string Link { get; set; }
-
         public bool IsImage { get; set; }
     }
     public class CreateImageDTO 

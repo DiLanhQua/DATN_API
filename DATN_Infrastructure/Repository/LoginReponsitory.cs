@@ -130,13 +130,6 @@ namespace DATN_Infrastructure.Repository
             }
         }
 
-
-       
-
-
-       
-
-
         //Đăng ký
         public async Task<bool> RegisterAsync(RegisterDTO registerDTO)
         {
@@ -167,7 +160,7 @@ namespace DATN_Infrastructure.Repository
                 _context.Logins.Add(login);
                 await _context.SaveChangesAsync();
 
-                var maxn = $"https://localhost:7048/api/Login/xn-account/{login.AccountId}";
+                var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
                 var emailBody = new StringBuilder();
                 emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
                 emailBody.AppendLine($"<br/><br/><a href='{maxn}' style='padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 15px; height: 40px;'>Xác nhận tài khoản</a>");
