@@ -16,7 +16,6 @@ namespace DATN_API.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-
         public OrderController(IUnitOfWork Uow, IMapper mapper)
         {
             _uow = Uow;
@@ -49,6 +48,11 @@ namespace DATN_API.Controllers
 
                     if (orderId > 0)
                     {
+                        if (orderDTO.VoucherId.HasValue)
+                        {
+                            await _uow.VoucherRepository.DeleteQuantilyVoucher(orderDTO.VoucherId.Value);
+                        }
+
                         // Trả về kết quả thành công với OrderId
                         return Ok(new
                         {

@@ -112,19 +112,25 @@ namespace DATN_Infrastructure.Repository
         {
             var re = new ReturnVoucherDTO();
 
-            var query = await _context.Vouchers.Select(v => new VoucherDTO
-            {
-                Id = v.Id,
-                VoucherName = v.VoucherName,
-                TimeStart = v.TimeStart,
-                TimeEnd = v.TimeEnd,
-                DiscountType = v.DiscountType,
-                Quantity = v.Quantity,
-                Discount = v.Discount,
-                Min_Order_Value = v.Min_Order_Value,
-                Max_Discount = v.Max_Discount,
-                Status = v.Status
-            }).AsNoTracking().ToListAsync();
+            var today = DateTime.Today;
+            var query = await _context.Vouchers
+                .Where(x => x.Quantity != 0 && x.TimeEnd.Date > today)
+                .Select(v => new VoucherDTO
+                {
+                    Id = v.Id,
+                    VoucherName = v.VoucherName,
+                    TimeStart = v.TimeStart,
+                    TimeEnd = v.TimeEnd,
+                    DiscountType = v.DiscountType,
+                    Quantity = v.Quantity,
+                    Discount = v.Discount,
+                    Min_Order_Value = v.Min_Order_Value,
+                    Max_Discount = v.Max_Discount,
+                    Status = v.Status
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
 
             // Nếu có tìm kiếm, lọc theo tên voucher
             if (!string.IsNullOrEmpty(voucherParams.Search))
