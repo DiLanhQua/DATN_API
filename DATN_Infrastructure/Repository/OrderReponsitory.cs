@@ -219,8 +219,9 @@ namespace DATN_Infrastructure.Repository
                 NumberPhone = deliveryAddress?.Phone, 
                 Status = order.StatusOrder,
                 Address = deliveryAddress?.Address,
-                Voucher = order.Voucher,
-                DetailOrder = detailOrderDtos
+                Voucher = _mapper.Map<VoucherDTO>(order.Voucher) ,
+                DetailOrder = detailOrderDtos,
+                TotalPrice=order.Total,
             };
 
             return result;

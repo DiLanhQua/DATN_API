@@ -35,7 +35,8 @@ namespace DATN_Core.DTO
         public string Address { get; set; } = string.Empty;
 
         public int Status { get; set; }
-        public Voucher Voucher { get; set; }
+        public decimal TotalPrice { get; set; }
+        public VoucherDTO Voucher { get; set; }
         public List<DetailOrderDtoForOrder>  DetailOrder { get; set; }
     }
 
