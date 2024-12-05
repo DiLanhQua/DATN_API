@@ -11,6 +11,8 @@ namespace DATN_Infrastructure.Data.DTO
 {
     public class ProductDTO
     {
+        public int Id { get; set; }
+
         public string ProductName { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
@@ -30,7 +32,7 @@ namespace DATN_Infrastructure.Data.DTO
 
         // File ảnh hoặc video
         public string Link { get; set; }
-    }
+    }   
 
     public class ProductDetaiAdd
     {

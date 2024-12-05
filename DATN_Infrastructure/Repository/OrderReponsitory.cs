@@ -146,7 +146,7 @@ namespace DATN_Infrastructure.Repository
                     3 => "shipped",
                     4 => "completed",
                     5 => "cancelled",
-                    _ => "cancelled"
+                    _ => "cc"
                 }
             }).ToList();
 
@@ -205,20 +205,62 @@ namespace DATN_Infrastructure.Repository
             var detailOrder = await _context.DetailOrders
                 .Where(x => x.OrderId == order.Id)
                 .Include(a => a.DetailProduct)  
-                .ThenInclude(dp => dp.Product).ThenInclude(dp=>dp.Media) 
                 .ToListAsync();
 
             var deliveryAddress = order.DeliveryAddress?.FirstOrDefault();
 
-            // Ánh xạ các DetailOrder thành DTO
-            var detailOrderDtos = detailOrder.Select(detailOrder => new DetailOrderDtoForOrder
+            List<DetailOrderDtoForOrder> detailOrderRes = new List<DetailOrderDtoForOrder>();
+
+            foreach ( var item in detailOrder)
             {
-                DetailProductId = detailOrder.DetailProductId, 
-                Quantity = detailOrder.Quantity,             
-                OrderId = detailOrder.OrderId,                 
-                DetailProduct = _mapper.Map<ProductDetailDTO>(detailOrder.DetailProduct), 
-                Product = _mapper.Map<ProductDTO>(detailOrder.DetailProduct.Product),    
-            }).ToList();
+                var media = await _context.Medium
+                .Where(a => a.ProductId == item.DetailProduct.ProductId && a.IsPrimary == true)
+                .Join(
+                    _context.Images,
+                    medium => medium.ImagesId,
+                    image => image.Id,
+                    (medium, image) => new ImageDeDTO
+                    {
+                        Id = medium.Id,
+                        IsImage = medium.IsPrimary,
+                        Link = image.Link
+                    }
+                )
+                .FirstOrDefaultAsync();
+
+                List<MediaADD> mediaADDs = new List<MediaADD>();
+
+                mediaADDs.Add(new MediaADD
+                {
+                    Link = media.Link,
+                    IsPrimary = media.IsImage,
+                });
+
+                var product = await _context.Products.FirstOrDefaultAsync(a => a.Id == item.DetailProduct.ProductId);
+
+                ProductDTO productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    BrandId = product.BrandId,
+                    Description = product.Description,
+                    CategoryId = product.CategoryId,
+                    Medias = mediaADDs,
+                };
+
+                DetailOrderDtoForOrder detailOrderDtos = new DetailOrderDtoForOrder
+                {
+                    DetailProductId = item.DetailProductId,
+                    Quantity = item.Quantity,
+                    OrderId = item.OrderId,
+                    DetailProduct = _mapper.Map<ProductDetailDTO>(item.DetailProduct),
+                    Product = productDTO
+                };
+
+                detailOrderRes.Add(detailOrderDtos);
+            }
+
+            // Ánh xạ các DetailOrder thành DTO
 
             var result = new OrderUserForDetailDtos
             {
@@ -229,7 +271,7 @@ namespace DATN_Infrastructure.Repository
                 Status = order.StatusOrder,
                 Address = deliveryAddress?.Address,
                 Voucher = _mapper.Map<VoucherDTO>(order.Voucher) ,
-                DetailOrder = detailOrderDtos,
+                DetailOrder = detailOrderRes,
                 TotalPrice=order.Total,
             };
 
