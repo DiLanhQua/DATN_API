@@ -45,10 +45,12 @@ namespace DATN_Infrastructure.Repository
                 await _context.Vouchers.AddAsync(voucher);
                 await _context.SaveChangesAsync();
 
+                Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                 // Log the add action
                 var log = new Login
                 {
-                    AccountId = 1, // Example: account that performed the action, change as needed
+                    AccountId = admin.Id, // Example: account that performed the action, change as needed
                     Action = "Thêm Voucher",
                     TimeStamp = DateTime.Now,
                     Description = $"Voucher '{voucher.VoucherName}' đã được tạo."
@@ -80,10 +82,12 @@ namespace DATN_Infrastructure.Repository
                     _context.Vouchers.Update(currentVoucher);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 3, // Example: account that performed the action, change as needed
+                        AccountId = admin.Id, // Example: account that performed the action, change as needed
                         Action = "Sửa Voucher",
                         TimeStamp = DateTime.Now,
                         Description = $"Voucher '{voucherDTO.Discount},{voucherDTO.Status},{voucherDTO.Quantity},{voucherDTO.Equals},{voucherDTO.Max_Discount},{voucherDTO.Min_Order_Value},{voucherDTO.TimeEnd},{voucherDTO.TimeStart},{voucherDTO.DiscountType}' đã được sửa."
@@ -138,6 +142,33 @@ namespace DATN_Infrastructure.Repository
             re.Vouchers = _mapper.Map<List<VoucherDTO>>(query);
             re.TotalItems = query.Count();
             return re;
+        }
+
+        public async Task<bool> DeleteQuantilyVoucher(int id)
+        {
+            var currentVoucher = await _context.Vouchers.FindAsync(id);
+            if (currentVoucher != null)
+            {
+                currentVoucher.Quantity = (byte)(currentVoucher.Quantity - 1);
+
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Vouchers.Update(currentVoucher);
+                    await _context.SaveChangesAsync();
+
+                   
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }

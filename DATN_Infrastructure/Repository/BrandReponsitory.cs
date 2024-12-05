@@ -58,10 +58,11 @@ namespace DATN_Infrastructure.Repository
                     await _context.Brands.AddAsync(res);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 1,   
+                        AccountId = admin.Id,   
                         Action = "Thêm Brand",
                         TimeStamp = DateTime.Now,
                         Description = $"Brand '{brandDTO.BrandName}' đã được tạo."
@@ -147,10 +148,11 @@ namespace DATN_Infrastructure.Repository
                     _context.Brands.Update(currentBrand);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 2,
+                        AccountId = admin.Id,
                         Action = "Sửa Brand",
                         TimeStamp = DateTime.Now,
                         Description = $"Brand '{brandDTO.BrandName}, {brandDTO.Country},{brandDTO.oldImage}' đã được sửa." //test cai nay di o

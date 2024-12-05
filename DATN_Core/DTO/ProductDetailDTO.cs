@@ -16,6 +16,7 @@ namespace DATN_Core.DTO
         public string Gender { get; set; }
         public string Status { get; set; }
         public int ProductId { get; set; }
+       
 
     }
     public class ProductDetailUP

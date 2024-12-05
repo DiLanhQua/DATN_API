@@ -55,10 +55,12 @@ namespace DATN_Infrastructure.Repository
                     _context.Medium.AddRange(media);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 1, // Example: account that performed the action, change as needed
+                        AccountId = admin.Id, // Example: account that performed the action, change as needed
                         Action = "Thêm media",
                         TimeStamp = DateTime.Now,
                         Description = $"Media" +

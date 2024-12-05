@@ -16,5 +16,6 @@ namespace DATN_Core.Interface
 
         // Phương thức cập nhật Voucher
         Task<bool> UpdateAsync(int id, UpdateVoucherDTO voucherDTO);
+        Task<bool> DeleteQuantilyVoucher(int id);
     }
 }

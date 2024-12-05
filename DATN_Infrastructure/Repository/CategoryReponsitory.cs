@@ -56,10 +56,12 @@ namespace DATN_Infrastructure.Repository
                     await _context.Categories.AddAsync(res);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 1, // Example: account that performed the action, change as needed
+                        AccountId = admin.Id, // Example: account that performed the action, change as needed
                         Action = "Thêm Category",
                         TimeStamp = DateTime.Now,
                         Description = $"Category '{CatagoryDTO.CategoryName}' đã được tạo."
@@ -145,10 +147,11 @@ namespace DATN_Infrastructure.Repository
                     _context.Categories.Update(currentBrand);
                     await _context.SaveChangesAsync();
 
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
                     // Log the add action
                     var log = new Login
                     {
-                        AccountId = 1, // Example: account that performed the action, change as needed
+                        AccountId = admin.Id, // Example: account that performed the action, change as needed
                         Action = "Sửa Category",
                         TimeStamp = DateTime.Now,
                         Description = $"Category '{catagoryDTO.CategoryName},{catagoryDTO.oldImage},{catagoryDTO.Picture}' đã được sửa."

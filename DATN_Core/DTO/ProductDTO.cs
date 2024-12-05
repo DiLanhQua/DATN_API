@@ -1,4 +1,5 @@
-﻿using DATN_Core.Entities;
+﻿using DATN_Core.DTO;
+using DATN_Core.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,15 @@ namespace DATN_Infrastructure.Data.DTO
     public class ProductDTO
     {
         public string ProductName { get; set; } = string.Empty;
+
         public string Description { get; set; } = string.Empty;
+
         public int CategoryId { get; set; }
 
         public int BrandId { get; set; }
 
         public List<ProductDetaiAdd> ProductDetais { get; set; } = new List<ProductDetaiAdd>();
+
         public List<MediaADD> Medias { get; set; } = new List<MediaADD>();
     }
 
@@ -59,5 +63,28 @@ namespace DATN_Infrastructure.Data.DTO
     {
         public int TotalItems { get; set; }
         public List<ProductDEDTO> Products { get; set; } = new List<ProductDEDTO>();
+    }
+
+    public class ProductsUserDtos
+    {
+        public int Id { get; set; }
+
+        public string ProductName { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        public string CategoryName { get; set; } = string.Empty;
+
+        public string BrandName { get; set;} = string.Empty;
+
+        public string ImagePrimary {  get; set;} = string.Empty;
+    
+        public ProductDetailDE DetailProducts { get; set; }
+    }
+
+    public class ProductsUserReturnDtos
+    {
+        public int TotalItems { get; set; }
+        public List<ProductsUserDtos> Products { get; set; } = new List<ProductsUserDtos>();
     }
 }

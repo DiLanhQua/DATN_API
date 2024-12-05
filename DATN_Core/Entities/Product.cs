@@ -19,11 +19,5 @@ namespace DATN_Core.Entities
         public virtual ICollection<Media> Media { get; set; } = new HashSet<Media>();
         public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
         public virtual ICollection<WishList> WishList { get; set; } = new HashSet<WishList>();
-
-
-
-
-
-
     }
 }

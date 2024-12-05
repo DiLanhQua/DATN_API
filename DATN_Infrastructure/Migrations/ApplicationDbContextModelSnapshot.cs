@@ -4,19 +4,16 @@ using DATN_Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.Migrate
+namespace DATN_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241125095345_reup-db")]
-    partial class reupdb
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,12 +231,12 @@ namespace DATN_Infrastructure.Data.Migrate
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Phone")
+                    b.Property<string>("Phone")
                         .HasMaxLength(15)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("int");
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -435,6 +432,9 @@ namespace DATN_Infrastructure.Data.Migrate
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("StatusOrder")
                         .HasColumnType("tinyint");
 
@@ -444,7 +444,7 @@ namespace DATN_Infrastructure.Data.Migrate
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("VoucherId")
+                    b.Property<int?>("VoucherId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -708,9 +708,7 @@ namespace DATN_Infrastructure.Data.Migrate
 
                     b.HasOne("DATN_Core.Entities.Voucher", "Voucher")
                         .WithMany("Order")
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Account");
 

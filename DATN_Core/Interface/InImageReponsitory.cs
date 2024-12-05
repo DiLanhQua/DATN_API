@@ -12,6 +12,6 @@ namespace DATN_Core.Interface
     public interface InImageReponsitory: IGenericeReponsitory<Image>
     {
         Task<bool> AddAsync(CreateImageDTO brandDTO); 
-        Task<ImageDeDTO> GetImage(int idproduct);
+        Task<List<ImageDeDTO>> GetImage(int idproduct);
     }
 }

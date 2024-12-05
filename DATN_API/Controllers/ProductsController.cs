@@ -5,6 +5,7 @@ using DATN_Core.Interface;
 using DATN_Core.Sharing;
 using DATN_Infrastructure.Data.DTO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 
@@ -30,6 +31,15 @@ namespace DATN_API.Controllers
             var result = _mapper.Map<IReadOnlyList<ProductDEDTO>>(src.Products); // Sử dụng ProductDTO ở đây
             return Ok(new Pagination<ProductDEDTO>(brandParams.Pagesize, brandParams.PageNumber, src.TotalItems, result));
         }
+
+        [HttpGet("get-user")]
+        public async Task<IActionResult> GetUserPage([FromQuery] Params brandParams)
+        {
+            var src = await _uow.ProductReponsitory.GetAllUserAsync(brandParams);
+            var result = _mapper.Map<IReadOnlyList<ProductsUserDtos>>(src.Products); // Sử dụng ProductDTO ở đây
+            return Ok(new Pagination<ProductsUserDtos>(brandParams.Pagesize, brandParams.PageNumber, src.TotalItems, result));
+        }
+
         [HttpGet("get-product/{id}")]
         public async Task<ActionResult> GetProduct(int id)
         {

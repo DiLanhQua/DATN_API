@@ -7,11 +7,6 @@ using DATN_Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DATN_Infrastructure.Repository
 {
@@ -48,6 +43,9 @@ namespace DATN_Infrastructure.Repository
 
 
         public ILoginReponsitory LoginReponsitory { get; }
+
+        public IDeliveryAddressRespository DeliveryAddressRespository {  get; }
+
         public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher)
         {
             _context = context;
@@ -74,6 +72,7 @@ namespace DATN_Infrastructure.Repository
             CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);
             MediaReponsitory = new MediaReponsitory(context, _mapper);
             LoginReponsitory = new LoginReponsitory(_context, _mapper, _passwordHasher, _email, _qrCoder);
+            DeliveryAddressRespository = new DeliveryAddressRespository(_context, _mapper);
 
 
         }

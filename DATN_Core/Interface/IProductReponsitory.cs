@@ -12,6 +12,7 @@ namespace DATN_Core.Interface
     public interface IProductReponsitory : IGenericeReponsitory<Product>
     {
         Task<ReturnProductDTO> GetAllAsync(Params brandParams);
+        Task<ProductsUserReturnDtos> GetAllUserAsync(Params brandParams);
         Task<ProductDEDTO> GetProduct(int id);
         Task<bool> AddProduct(ProductDTO ProDTO);
         Task<bool> UpdateProduct(int id, ProductUPDTO productUP);

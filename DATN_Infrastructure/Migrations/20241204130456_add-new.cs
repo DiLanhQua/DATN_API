@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DATN_Infrastructure.Data.Migrate
+namespace DATN_Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class reupdb : Migration
+    public partial class addnew : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -211,8 +211,9 @@ namespace DATN_Infrastructure.Data.Migrate
                     TimeOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StatusOrder = table.Column<byte>(type: "tinyint", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: true),
-                    VoucherId = table.Column<int>(type: "int", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false)
+                    VoucherId = table.Column<int>(type: "int", nullable: true),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -227,8 +228,7 @@ namespace DATN_Infrastructure.Data.Migrate
                         name: "FK_Orders_Vouchers_VoucherId",
                         column: x => x.VoucherId,
                         principalTable: "Vouchers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -357,8 +357,8 @@ namespace DATN_Infrastructure.Data.Migrate
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ZipCode = table.Column<int>(type: "int", nullable: false),
-                    Phone = table.Column<int>(type: "int", maxLength: 15, nullable: false),
+                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Note = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     OrderId = table.Column<int>(type: "int", nullable: false)
                 },

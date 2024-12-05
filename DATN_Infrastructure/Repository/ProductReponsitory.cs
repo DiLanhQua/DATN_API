@@ -59,9 +59,12 @@ namespace DATN_Infrastructure.Repository
                     }).ToList();
 
                     _context.DetailProducts.AddRange(productDetails);
+
+                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                     var log = new Login
                     {
-                        AccountId = 1, // Example: account that performed the action, change as needed
+                        AccountId = admin.Id, // Example: account that performed the action, change as needed
                         Action = "Thêm Product",
                         TimeStamp = DateTime.Now,
                         Description = $"Product '{productDTO.ProductName}' đã được tạo."
@@ -200,10 +203,59 @@ namespace DATN_Infrastructure.Repository
             return result;
         }
 
+        public async Task<ProductsUserReturnDtos> GetAllUserAsync(Params brandParams)
+        {
+            var result = new ProductsUserReturnDtos();
+
+            var query = _context.Products
+                        .Include(p => p.Category)
+                        .Include(p => p.Brand)
+                        .AsNoTracking()
+                        .AsQueryable();
+
+            if (!string.IsNullOrEmpty(brandParams.Search))
+            {
+                string searchKeyword = brandParams.Search.ToLower();
+                query = query.Where(p => p.ProductName.ToLower().Contains(searchKeyword));
+            }
+
+            var primaryImages = await _context.Medium
+                .Where(m => m.IsPrimary == true && m.ImagesId != null)
+                .Join(
+                    _context.Images,
+                    medium => medium.ImagesId.Value, // Đảm bảo ImagesId không null
+                    image => image.Id,
+                    (medium, image) => new
+                    {
+                        ProductId = medium.ProductId,
+                        ImageLink = image.Link
+                    }
+                )
+                .ToDictionaryAsync(x => x.ProductId, x => x.ImageLink);
+
+            result.TotalItems = await query.CountAsync();
+
+            result.Products = await query
+               .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
+               .Take(brandParams.Pagesize)
+               .Select(p => new ProductsUserDtos
+               {
+                   Id = p.Id,
+                   ProductName = p.ProductName,
+                   Description = p.Description,
+                   CategoryName = p.Category.CategoryName,
+                   BrandName = p.Brand.BrandName,
+                   ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null
+               })
+               .ToListAsync();
+
+            return result;
+        }
+
         public async Task<ProductDEDTO> GetProduct(int id)
         {
             var query = await _context.Products
-        .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id);
             return _mapper.Map<ProductDEDTO>(query);
         }
         public async Task<bool> UpdateProduct(int id, ProductUPDTO productUP)
@@ -223,9 +275,12 @@ namespace DATN_Infrastructure.Repository
                 product.Description = productUP.Description;
                 product.CategoryId = productUP.CategoryId;
                 product.BrandId = productUP.BrandId;
+
+                Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
+
                 var log = new Login
                 {
-                    AccountId = 1, // Example: account that performed the action, change as needed
+                    AccountId = admin.Id, // Example: account that performed the action, change as needed
                     Action = "Sửa Sản Phẩm",
                     TimeStamp = DateTime.Now,
                     Description = $"Sản Phẩm '{productUP.ProductName},{productUP.Description},{productUP.CategoryId},{productUP.BrandId}' đã được sửa."

@@ -12,7 +12,12 @@ namespace DATN_Core.Interface
     public interface IOrderReponsitory : IGenericeReponsitory<Order>
     {
         Task<ReturnOrder> GetAllAsync();
-        Task<bool> AddAsync(CreateOrder orderDTO);
+        Task<int> AddAsync(CreateOrder orderDTO);
         Task<bool> UpdateOrder(int id, UpdateOrder orderDTO);
+
+        Task<List<Order>> GetAllOrder();
+
+        Task<List<OrderUserDtos>> GetOrderByIdUser(int idUser);
+        Task<OrderUserForDetailDtos> GetOrderById(int id);
     }
 }
