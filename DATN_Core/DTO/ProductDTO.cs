@@ -87,6 +87,10 @@ namespace DATN_Infrastructure.Data.DTO
 
         public string BrandName { get; set;} = string.Empty;
 
+        public int CategoryId { get; set; }
+
+        public int BrandId { get; set; }
+
         public string ImagePrimary {  get; set;} = string.Empty;
     
         public ProductDetailDE DetailProducts { get; set; }

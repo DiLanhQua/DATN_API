@@ -38,91 +38,59 @@ namespace DATN_Infrastructure.Repository
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                // Thêm sản phẩm vào cơ sở dữ liệu
                 _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // SaveChanges trước khi tiếp tục
 
-                int productId = product.Id;
-
-
-                if (productDTO.ProductDetais != null && productDTO.ProductDetais.Count > 0 )
+                if (productDTO.ProductDetais?.Count > 0)
                 {
                     var productDetails = productDTO.ProductDetais.Select(detail => new DetailProduct
                     {
+                        ProductId = product.Id,
                         Size = detail.Size,
                         Price = detail.Price,
                         Quantity = detail.Quantity,
                         ColorId = detail.ColorId,
                         Gender = detail.Gender,
-                        Status = detail.Status,
-                        ProductId = productId
+                        Status = detail.Status
                     }).ToList();
 
                     _context.DetailProducts.AddRange(productDetails);
-
-                    Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
-
-                    var log = new Login
-                    {
-                        AccountId = admin.Id, // Example: account that performed the action, change as needed
-                        Action = "Thêm Product",
-                        TimeStamp = DateTime.Now,
-                        Description = $"Product '{productDTO.ProductName}' đã được tạo."
-                    };
-
-                    await _context.Logins.AddAsync(log);
-                  
-                    await transaction.CommitAsync();
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    Console.WriteLine("Không có chi tiết sản phẩm để thêm.");
                 }
 
-                // Thêm media nếu có
-                if (productDTO.Medias != null && productDTO.Medias.Count > 0)
+                if (productDTO.Medias?.Count > 0)
                 {
                     foreach (var mediaDto in productDTO.Medias)
                     {
-
-                        var imageLink = await CreateImage(mediaDto.Link); 
+                        var imageLink = await CreateImage(mediaDto.Link);
                         if (!string.IsNullOrEmpty(imageLink))
                         {
                             var image = new Image { Link = imageLink };
                             _context.Images.Add(image);
-                            await _context.SaveChangesAsync(); 
+                            await _context.SaveChangesAsync(); // SaveChanges trước Commit
 
                             var media = new Media
                             {
+                                ProductId = product.Id,
                                 IsPrimary = mediaDto.IsPrimary,
-                                BlogId = null,
-                                ProductId = productId,
                                 ImagesId = image.Id
                             };
 
                             _context.Medium.Add(media);
-                        }  
-
-
-                        
-                        await _context.SaveChangesAsync();
+                        }
                     }
                 }
 
-                await transaction.CommitAsync();
+                await _context.SaveChangesAsync(); // SaveChanges cuối cùng
+                await transaction.CommitAsync();  // Commit sau cùng
                 return true;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                Console.WriteLine($"Lỗi khi thêm sản phẩm: {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Chi tiết lỗi: {ex.InnerException.Message}");
-                }
+                await transaction.RollbackAsync(); // Rollback nếu có lỗi
+                Console.WriteLine(ex.Message);
                 throw;
             }
+
         }
         public async Task<string> CreateImage(string base64String)
         {
@@ -247,6 +215,8 @@ namespace DATN_Infrastructure.Repository
                 )
                 .ToDictionaryAsync(x => x.ProductId, x => x.ImageLink);
 
+
+
             result.TotalItems = await query.CountAsync();
 
             result.Products = await query
@@ -259,6 +229,8 @@ namespace DATN_Infrastructure.Repository
                    Description = p.Description,
                    CategoryName = p.Category.CategoryName,
                    BrandName = p.Brand.BrandName,
+                   CategoryId = p.CategoryId,
+                   BrandId = p.BrandId,
                    ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null
                })
                .ToListAsync();

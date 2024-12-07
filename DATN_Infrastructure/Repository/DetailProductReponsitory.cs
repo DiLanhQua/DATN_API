@@ -90,7 +90,7 @@ namespace DATN_Infrastructure.Repository
 
         public async Task<List<ProductDetailDE>> GetProductDetail(int productid)
         {
-            var query = await _context.DetailProducts.Where(p => p.ProductId == productid).ToListAsync();
+            var query = await _context.DetailProducts.Where(p => p.ProductId == productid).Include(x=> x.Color).ToListAsync();
             return _mapper.Map<List<ProductDetailDE>>(query);
         }
         public async Task<ProductDetailDE> GetDetail(int id,int productid)
