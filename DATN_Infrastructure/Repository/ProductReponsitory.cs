@@ -244,6 +244,52 @@ namespace DATN_Infrastructure.Repository
             .FirstOrDefaultAsync(p => p.Id == id);
             return _mapper.Map<ProductDEDTO>(query);
         }
+
+        public async Task<List<ProductsHotSaleDtos>> GetProductsHotSale()
+        {
+            var detailOrder = await _context.DetailOrders.GroupBy(a => a.DetailProductId)
+                               .Select(a => new
+                               {
+                                   Count = a.Count(),
+                                   Id = a.Key,
+                               })
+                               .OrderByDescending(a => a.Count)
+                               .Take(4)
+                               .ToListAsync();
+
+            List<ProductsHotSaleDtos> response = new List<ProductsHotSaleDtos>();
+
+            foreach (var item in detailOrder)
+            {
+                DetailProduct detailProduct = await _context.DetailProducts.FirstOrDefaultAsync(a => a.Id == item.Id);
+
+                Product product = await _context.Products
+                                 .Include(a => a.Brand)
+                                 .Include(a => a.Category)
+                                 .FirstOrDefaultAsync(a => a.Id == detailProduct.ProductId);
+
+                Media media = await _context.Medium.FirstOrDefaultAsync(a => a.ProductId == product.Id && a.IsPrimary == true);
+
+                Image image = await _context.Images.FirstOrDefaultAsync(a => a.Id == media.ImagesId);
+
+                ProductsHotSaleDtos productsItem = new ProductsHotSaleDtos
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Price = detailProduct.Price,
+                    BrandId = product.BrandId,
+                    BrandName = product.Brand.BrandName,
+                    CategoryId = product.CategoryId,
+                    CategoryName = product.Category.CategoryName,
+                    ImagePrimary = image.Link,
+                };
+
+                response.Add(productsItem);
+            }
+
+            return response;
+        }
+
         public async Task<bool> UpdateProduct(int id, ProductUPDTO productUP)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();

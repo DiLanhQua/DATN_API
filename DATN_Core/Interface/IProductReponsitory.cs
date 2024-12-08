@@ -17,6 +17,7 @@ namespace DATN_Core.Interface
         Task<bool> AddProduct(ProductDTO ProDTO);
         Task<bool> UpdateProduct(int id, ProductUPDTO productUP);
         Task<bool> Deleteproduct(int id);
+        Task<List<ProductsHotSaleDtos>> GetProductsHotSale();
        
     }
 }

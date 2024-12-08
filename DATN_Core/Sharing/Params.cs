@@ -8,7 +8,7 @@ namespace DATN_Core.Sharing
 {
     public class Params
     {
-        public int maxPageSize { get; set; } = 5;
+        public int maxPageSize { get; set; } = 100;
         private int pageSize = 3;
         public int Pagesize
         {

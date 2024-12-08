@@ -101,4 +101,23 @@ namespace DATN_Infrastructure.Data.DTO
         public int TotalItems { get; set; }
         public List<ProductsUserDtos> Products { get; set; } = new List<ProductsUserDtos>();
     }
+
+    public class ProductsHotSaleDtos
+    {
+        public int Id { get; set; }
+
+        public string ProductName { get; set; } = string.Empty;
+
+        public string BrandName { get; set;} = string.Empty;
+
+        public string CategoryName { get; set;} = string.Empty;
+
+        public int CategoryId { get; set; } 
+        
+        public int BrandId { get; set; }
+
+        public string ImagePrimary { get; set;}= string.Empty;
+
+        public decimal Price { get; set;}
+    }
 }

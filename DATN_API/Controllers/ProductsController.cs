@@ -51,6 +51,21 @@ namespace DATN_API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("hot-sale-product")]
+        public async Task<IActionResult> GetHotSaleProducts()
+        {
+            try
+            {
+                List<ProductsHotSaleDtos> response = await _uow.ProductReponsitory.GetProductsHotSale();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("add-product")]
         public async Task<ActionResult> AddProduct([FromBody] ProductDTO proDto)
         {
