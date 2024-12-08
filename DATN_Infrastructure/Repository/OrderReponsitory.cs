@@ -6,7 +6,9 @@ using DATN_Infrastructure.Data;
 using DATN_Infrastructure.Data.DTO;
 using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
-
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Security.Cryptography;
+using System.Text;
 namespace DATN_Infrastructure.Repository
 {
     public class OrderReponsitory : GenericeReponsitory<Order>, IOrderReponsitory
@@ -180,7 +182,8 @@ namespace DATN_Infrastructure.Repository
                     FullName = item.Account.FullName,
                     NumberPhone = deliveryAddress.Phone ?? "Không có",
                     Status = item.StatusOrder,
-                    Address = deliveryAddress.Address ?? "Không có"
+                    Address = deliveryAddress.Address ?? "Không có",
+                    Paymend = item.PaymentMethod
                 };
 
                 result.Add(order);
@@ -278,9 +281,123 @@ namespace DATN_Infrastructure.Repository
             return result;
         }
 
+        public string OrderPayVNPay(int amount, int id)
+        {
+            var vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
+            var vnp_Returnurl = "https://localhost:7048/api/Order/vnpay-return";
 
+            var vnp_TmnCode = "MK3OFAHT";
 
+            var vnp_HashSecret = "4IDW7MDQYS04GE2J50VCN2XS7QJ27KPN";
 
+            var vnpay = new VnPayLibrary();
+
+            vnpay.AddRequestData("vnp_Version", "2.1.0");
+
+            vnpay.AddRequestData("vnp_Command", "pay");
+
+            vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
+
+            vnpay.AddRequestData("vnp_Amount", $"{(amount * 100)}");
+
+            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+            vnpay.AddRequestData("vnp_CurrCode", "VND");
+
+            vnpay.AddRequestData("vnp_IpAddr", "127.0.0.1");
+
+            vnpay.AddRequestData("vnp_Locale", "vn");
+
+            vnpay.AddRequestData("vnp_OrderInfo", id.ToString());
+
+            vnpay.AddRequestData("vnp_OrderType", "other");
+
+            vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
+
+            vnpay.AddRequestData("vnp_TxnRef", id.ToString());
+
+            return vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+        }
+
+        public async Task<bool> AffterBanking(int id)
+        {
+            Order order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+
+            order.PaymentMethod = $"Online - Đã thanh toán";
+
+            _context.Orders.Update(order);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+    }
+
+    public class VnPayLibrary
+    {
+        private readonly SortedList<string, string> _requestData = new SortedList<string, string>();
+        private readonly SortedList<string, string> _responseData = new SortedList<string, string>();
+
+        public void AddRequestData(string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                _requestData.Add(key, value);
+            }
+        }
+
+        public void AddResponseData(string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                _responseData.Add(key, value);
+            }
+        }
+
+        public string CreateRequestUrl(string baseUrl, string hashSecret)
+        {
+            var data = new StringBuilder();
+            foreach (var kv in _requestData)
+            {
+                if (data.Length > 0)
+                {
+                    data.Append("&");
+                }
+                data.Append(kv.Key + "=" + Uri.EscapeDataString(kv.Value));
+            }
+
+            var rawData = data.ToString();
+            var signData = HmacSHA512(hashSecret, rawData);
+            var paymentUrl = $"{baseUrl}?{rawData}&vnp_SecureHash={signData}";
+            return paymentUrl;
+        }
+
+        public bool ValidateSignature(string inputHash, string secretKey)
+        {
+            var data = new StringBuilder();
+            foreach (var kv in _responseData)
+            {
+                if (kv.Key != "vnp_SecureHash")
+                {
+                    if (data.Length > 0)
+                    {
+                        data.Append("&");
+                    }
+                    data.Append(kv.Key + "=" + Uri.EscapeDataString(kv.Value));
+                }
+            }
+
+            var rawData = data.ToString();
+            var myChecksum = HmacSHA512(secretKey, rawData);
+            return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        private static string HmacSHA512(string key, string inputData)
+        {
+            var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(key));
+            var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(inputData));
+            return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        }
     }
 }

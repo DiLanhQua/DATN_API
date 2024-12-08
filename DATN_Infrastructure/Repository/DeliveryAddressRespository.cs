@@ -25,7 +25,7 @@ namespace DATN_Infrastructure.Repository
             data.OrderId = idOrder;
             data.ZipCode = GenerateRandomString();
 
-            _context.Add(data);
+            _context.DeliveryAddresses.Add(data);
             await _context.SaveChangesAsync();
 
             return data;

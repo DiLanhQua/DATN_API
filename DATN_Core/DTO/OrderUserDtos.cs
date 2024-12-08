@@ -13,6 +13,8 @@ namespace DATN_Core.DTO
 
         public string OrderCode { get; set; } = string.Empty;
 
+        public string Paymend {  get; set; } = string.Empty ;
+
         public string FullName { get; set; } = string.Empty;
 
         public string NumberPhone { get; set; } = string.Empty;
