@@ -28,22 +28,38 @@ namespace DATN_API.Controllers
             return Ok(new Pagination<BlogDTO>(brandParams.Pagesize, brandParams.PageNumber, src.totalItems, result));
         }
 
-
-        [HttpGet("get-blog-by-id/{id}")]
-        public async Task<ActionResult> GetById(int id)
+        [HttpGet("blog-id/{id}")]
+        public async Task<IActionResult> GetBlogById(int id)
         {
-            var brand = await _uow.BlogReponsitory.GetAsync(id);
-            if (brand == null)
+            try
             {
-                return BadRequest($"Not found id = [{id}]");
+                BlogDTO respose = await _uow.BlogReponsitory.GetBlogByIdAsync(id);
 
-
+                return Ok(respose);
             }
-            return Ok(_mapper.Map<Blog, BlogDTO>(brand));
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("image-blog/{idBlog}")]
+        public async Task<IActionResult> GetImageByIdBlog(int idBlog)
+        {
+            try
+            {
+                List<ImageBlogDtos> respose = await _uow.BlogReponsitory.GetImageByIdBlog(idBlog);
+
+                return Ok(respose);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("add-blog")]
-        public async Task<ActionResult> AddBlog([FromForm] CreateBlogDTO mediaDTO)
+        public async Task<ActionResult> AddBlog([FromBody] CreateBlogDTO mediaDTO)
         {
             try
             {
@@ -60,8 +76,9 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("update-blog-by-id/{id}")]
-        public async Task<ActionResult> UpdateMedia(int id, UpdateDTO updateMediaDTO)
+        public async Task<ActionResult> UpdateMedia(int id, CreateBlogDTO updateMediaDTO)
         {
             try
             {
@@ -78,21 +95,45 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPatch("is-primary/{idImage}")]
+        public async Task<IActionResult> IsPrimaryImageBlog(int idImage)
+        {
+            try
+            {
+                bool response = await _uow.BlogReponsitory.IsPrimaryBlog(idImage);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("delete-image/{idImage}")]
+        public async Task<IActionResult> DeleteImageById(int idImage)
+        {
+            try
+            {
+                bool response = await _uow.BlogReponsitory.DeleteImageBlog(idImage);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("delete-blog-by-id/{id}")]
         public async Task<ActionResult> RemoveMedia(int id)
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var cate = await _uow.BlogReponsitory.GetAsync(id);
-                    if (cate != null)
-                    {
-                        await _uow.BlogReponsitory.DeleteAsync(id);
-                    }
-                    return Ok(cate);
-                }
-                return BadRequest($"Not Found Id [{id}]");
+                bool response = await _uow.BlogReponsitory.DeleteBlogById(id);
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

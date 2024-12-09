@@ -16,7 +16,7 @@ namespace DATN_Infrastructure.Repository
         public async Task SendEmail(string email, string subject, string htmlContent)
         {
             var mess = new MimeMessage();
-            mess.From.Add(new MailboxAddress("Your Name", _emailDTO.Username ?? throw new ArgumentNullException(nameof(_emailDTO.Username))));
+            mess.From.Add(new MailboxAddress("Lạnh quá đi", _emailDTO.Username ?? throw new ArgumentNullException(nameof(_emailDTO.Username))));
 
             mess.To.Add(new MailboxAddress("", email));
             mess.Subject = subject;
