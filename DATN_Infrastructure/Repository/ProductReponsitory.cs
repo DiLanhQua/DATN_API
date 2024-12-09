@@ -144,7 +144,7 @@ namespace DATN_Infrastructure.Repository
                 .AsQueryable();
 
             var primaryImages = await _context.Medium
-               .Where(m => m.IsPrimary == true && m.ImagesId != null)
+               .Where(m => m.IsPrimary == true && m.ImagesId != null && m.ProductId != null)
                .Join(
                    _context.Images,
                    medium => medium.ImagesId.Value, // Đảm bảo ImagesId không null
@@ -157,6 +157,8 @@ namespace DATN_Infrastructure.Repository
                )
                .ToDictionaryAsync(x => x.ProductId, x => x.ImageLink);
 
+
+
             if (!string.IsNullOrEmpty(brandParams.Search))
             {
                 string searchKeyword = brandParams.Search.ToLower();
@@ -166,21 +168,31 @@ namespace DATN_Infrastructure.Repository
 
             result.TotalItems = await query.CountAsync();
 
+            List<Product> products = await query
+                                    .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
+                                    .Take(brandParams.Pagesize).ToListAsync();
 
-            result.Products = await query
-                .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
-                .Take(brandParams.Pagesize)
-                .Select(p => new ProductDEDTO
+            List<ProductDEDTO> response = new List<ProductDEDTO>();
+
+            foreach (var p in products)
+            {
+                DetailProduct detailProduct = await _context.DetailProducts.FirstOrDefaultAsync(a => a.ProductId == p.Id);
+
+                ProductDEDTO productDEDTO = new ProductDEDTO
                 {
                     Id = p.Id,
                     ProductName = p.ProductName,
                     Description = p.Description,
                     CategoryId = p.CategoryId,
                     BrandId = p.BrandId,
-                    ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null
+                    ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null,
+                    Price = detailProduct.Price | 0,
+                };
 
-                })
-                .ToListAsync();
+                response.Add(productDEDTO);
+            }
+
+            result.Products = response;
 
             return result;
         }
@@ -202,7 +214,7 @@ namespace DATN_Infrastructure.Repository
             }
 
             var primaryImages = await _context.Medium
-                .Where(m => m.IsPrimary == true && m.ImagesId != null)
+                .Where(m => m.IsPrimary == true && m.ImagesId != null && m.ProductId != null)
                 .Join(
                     _context.Images,
                     medium => medium.ImagesId.Value, // Đảm bảo ImagesId không null
@@ -219,21 +231,33 @@ namespace DATN_Infrastructure.Repository
 
             result.TotalItems = await query.CountAsync();
 
-            result.Products = await query
-               .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
-               .Take(brandParams.Pagesize)
-               .Select(p => new ProductsUserDtos
-               {
-                   Id = p.Id,
-                   ProductName = p.ProductName,
-                   Description = p.Description,
-                   CategoryName = p.Category.CategoryName,
-                   BrandName = p.Brand.BrandName,
-                   CategoryId = p.CategoryId,
-                   BrandId = p.BrandId,
-                   ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null
-               })
-               .ToListAsync();
+            List<Product> products = await query
+                        .Skip((brandParams.PageNumber - 1) * brandParams.Pagesize)
+                        .Take(brandParams.Pagesize).ToListAsync();
+
+            List<ProductsUserDtos> response = new List<ProductsUserDtos>();
+
+            foreach (var p in products)
+            {
+                DetailProduct detailProduct = await _context.DetailProducts.FirstOrDefaultAsync(a => a.ProductId == p.Id);
+
+                ProductsUserDtos productDEDTO = new ProductsUserDtos
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    CategoryName = p.Category.CategoryName,
+                    BrandName = p.Brand.BrandName,
+                    CategoryId = p.CategoryId,
+                    BrandId = p.BrandId,
+                    ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null,
+                    Price = detailProduct.Price | 0,
+                };
+
+                response.Add(productDEDTO);
+            }
+
+            result.Products = response;
 
             return result;
         }

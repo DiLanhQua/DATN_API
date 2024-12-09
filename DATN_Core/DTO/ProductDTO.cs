@@ -58,6 +58,8 @@ namespace DATN_Infrastructure.Data.DTO
 
         public string ImagePrimary { get; set; } = string.Empty;
 
+        public decimal Price { get; set; }
+
     }
     public class ProductUPDTO
     {
@@ -92,6 +94,8 @@ namespace DATN_Infrastructure.Data.DTO
         public int BrandId { get; set; }
 
         public string ImagePrimary {  get; set;} = string.Empty;
+
+        public decimal Price { get; set; }
     
         public ProductDetailDE DetailProducts { get; set; }
     }
