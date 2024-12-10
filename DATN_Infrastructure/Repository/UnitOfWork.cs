@@ -44,9 +44,9 @@ namespace DATN_Infrastructure.Repository
 
         public ILoginReponsitory LoginReponsitory { get; }
 
-        public IDeliveryAddressRespository DeliveryAddressRespository {  get; }
+        public IDeliveryAddressRespository DeliveryAddressRespository { get; }
 
-        public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher)
+        public UnitOfWork(ApplicationDbContext context, IFileProvider fileProvider, IMapper mapper, IOptions<EmailDTO> emailDTO, IEmail email, QrCoder qrCoder, IPasswordHasher<Account> passwordHasher )
         {
             _context = context;
             _fileProvider = fileProvider;
@@ -55,7 +55,7 @@ namespace DATN_Infrastructure.Repository
             _emailDTO = emailDTO.Value;
             _qrCoder = qrCoder;
             _passwordHasher = passwordHasher;
-            CartReponsitory = new CartReponsitory(_context,  _mapper);
+            CartReponsitory = new CartReponsitory(_context, _mapper);
             BrandReponsitory = new BrandReponsitory(_context, _fileProvider, _mapper);
             InImageReponsitory = new ImagesReponsitory(_context, _fileProvider, _mapper);
             OrderReponsitory = new OrderReponsitory(_context, _mapper);
@@ -66,7 +66,7 @@ namespace DATN_Infrastructure.Repository
             CommentRepository = new CommentRepository(_context, _mapper);
             VoucherRepository = new VoucherRepository(_context, _mapper);
             AccountReponsitory = new AccountReponsitory(_context, _mapper, _passwordHasher, _email, _qrCoder);
-            EmailReponsitory = new EmailReponsitory(emailDTO);
+            EmailReponsitory = new EmailReponsitory(emailDTO,_context,_mapper);
             CartReponsitory = new CartReponsitory(_context, _mapper);
             ColorReponsitory = new ColorRepository(_context, _mapper);
             CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);
