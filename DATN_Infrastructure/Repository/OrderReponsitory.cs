@@ -81,6 +81,11 @@ namespace DATN_Infrastructure.Repository
                     _context.Orders.Update(or);
                     await _context.SaveChangesAsync();
 
+                    if(or.StatusOrder == 4)
+                    {
+                        await UpdateQuantityProducts(id); // trừ số lượng khi giao hàng thành công
+                    }
+
                     Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
                     // Log the add action
                     var log = new Login
@@ -103,6 +108,22 @@ namespace DATN_Infrastructure.Repository
                 }
             }
             return false;
+        }
+
+        private async Task UpdateQuantityProducts(int idOrder)
+        {
+            List<DetailOrder> detailOrders = await _context.DetailOrders.Where(a => a.OrderId == idOrder).ToListAsync();
+
+            foreach(var item in detailOrders)
+            {
+                DetailProduct detailProduct = await _context.DetailProducts.FindAsync(item.DetailProductId);
+
+                detailProduct.Quantity = detailProduct.Quantity - item.Quantity;
+
+                _context.DetailProducts.Update(detailProduct);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         //public async Task<bool> DeleteCart(int id)
