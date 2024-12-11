@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using DATN_Core.DTO;
 using DATN_Core.Entities;
 using DATN_Core.Interface;
@@ -6,9 +7,13 @@ using DATN_Infrastructure.Data;
 using DATN_Infrastructure.Data.DTO;
 using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Ocsp;
+using PdfSharpCore;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace DATN_Infrastructure.Repository
 {
     public class OrderReponsitory : GenericeReponsitory<Order>, IOrderReponsitory
@@ -81,9 +86,9 @@ namespace DATN_Infrastructure.Repository
                     _context.Orders.Update(or);
                     await _context.SaveChangesAsync();
 
-                    if(or.StatusOrder == 4)
+                    if(or.StatusOrder == 5)
                     {
-                        await UpdateQuantityProducts(id); // trừ số lượng khi giao hàng thành công
+                        await UpdateQuantityProducts(id, false); // trừ số lượng khi giao hàng thành công
                     }
 
                     Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
@@ -110,7 +115,7 @@ namespace DATN_Infrastructure.Repository
             return false;
         }
 
-        private async Task UpdateQuantityProducts(int idOrder)
+        public async Task UpdateQuantityProducts(int idOrder, bool action)
         {
             List<DetailOrder> detailOrders = await _context.DetailOrders.Where(a => a.OrderId == idOrder).ToListAsync();
 
@@ -118,7 +123,14 @@ namespace DATN_Infrastructure.Repository
             {
                 DetailProduct detailProduct = await _context.DetailProducts.FindAsync(item.DetailProductId);
 
-                detailProduct.Quantity = detailProduct.Quantity - item.Quantity;
+                if (action)
+                {
+                    detailProduct.Quantity = detailProduct.Quantity - item.Quantity;
+                }
+                else
+                {
+                    detailProduct.Quantity = detailProduct.Quantity + item.Quantity;
+                }
 
                 _context.DetailProducts.Update(detailProduct);
             }
@@ -262,6 +274,8 @@ namespace DATN_Infrastructure.Repository
 
                 var product = await _context.Products.FirstOrDefaultAsync(a => a.Id == item.DetailProduct.ProductId);
 
+                var color = await _context.Colors.FindAsync(item.DetailProduct.ColorId);
+
                 ProductDTO productDTO = new ProductDTO
                 {
                     Id = product.Id,
@@ -277,6 +291,7 @@ namespace DATN_Infrastructure.Repository
                     DetailProductId = item.DetailProductId,
                     Quantity = item.Quantity,
                     OrderId = item.OrderId,
+                    ColorName = color.NameColor,
                     DetailProduct = _mapper.Map<ProductDetailDTO>(item.DetailProduct),
                     Product = productDTO
                 };
@@ -284,6 +299,7 @@ namespace DATN_Infrastructure.Repository
                 detailOrderRes.Add(detailOrderDtos);
             }
 
+            Voucher voucher = await _context.Vouchers.FindAsync(order.VoucherId);
             // Ánh xạ các DetailOrder thành DTO
 
             var result = new OrderUserForDetailDtos
@@ -294,9 +310,10 @@ namespace DATN_Infrastructure.Repository
                 NumberPhone = deliveryAddress?.Phone, 
                 Status = order.StatusOrder,
                 Address = deliveryAddress?.Address,
-                Voucher = _mapper.Map<VoucherDTO>(order.Voucher) ,
+                Voucher = _mapper.Map<VoucherDTO>(voucher) ,
                 DetailOrder = detailOrderRes,
                 TotalPrice=order.Total,
+                PaymentMethod = order.PaymentMethod,
             };
 
             return result;
@@ -352,6 +369,91 @@ namespace DATN_Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> ExportFilePDF(int idOrder, string filePath)
+        {
+            try
+            {
+                // Tạo một đối tượng PdfDocument
+                PdfDocument document = new PdfDocument();
+
+                string content = System.IO.File.ReadAllText(Path.Combine(filePath));
+
+                Order order = await _context.Orders.FindAsync(idOrder);
+
+                Account user = await _context.Accounts.FindAsync(order.AccountId);
+
+                DeliveryAddress deliveryAddress = await _context.DeliveryAddresses.FirstOrDefaultAsync(a => a.OrderId == order.Id);
+
+                content = content.Replace("{{fullName}}", $"{user.FullName}");
+
+                content = content.Replace("{{status}}", $"{order.StatusOrder switch
+                {
+                    1 => "Chờ xử lý",
+                    3 => "Đã gửi",
+                    4 => "Hoàn thành",
+                    5 => "Đã hủy",
+                    _ => "cc"
+                }}");
+
+                content = content.Replace("{{id}}", $"HD{order.Id.ToString().PadLeft(4, '0')}");
+
+                content = content.Replace("{{phone}}", $"{deliveryAddress.Phone}");
+
+                content = content.Replace("{{address}}", $"{deliveryAddress.Address}");
+
+                content = content.Replace("{{note}}", $"{deliveryAddress.Note}");
+
+                content = content.Replace("{{amoount}}", $"{order.Total.ToString("C3")}");
+
+                content = content.Replace("{{pay}}", $"{order.PaymentMethod}");
+
+                string emlment = "";
+
+                List<DetailOrder> detailOrderList = await _context.DetailOrders.Where(a => a.OrderId == idOrder).ToListAsync();
+
+                int index = 0;
+
+                foreach(var item in detailOrderList)
+                {
+                    index++;
+                    DetailProduct detaillProduct = await _context.DetailProducts.FindAsync(item.DetailProductId);
+
+                    Product product = await _context.Products.FindAsync(detaillProduct.ProductId);
+
+                    emlment += $" <tr>\r\n<td style=\"padding: 10px 3px; border-bottom: 1px solid #84848448\">\r\n{index}\r\n</td>\r\n<td style=\"padding: 10px 15px; border-bottom: 1px solid #84848448\">\r\n{product.ProductName}\r\n</td>\r\n<td style=\"padding: 10px 15px; border-bottom: 1px solid #84848448\">\r\n{detaillProduct.Price.ToString("C3")}\r\n</td>\r\n<td style=\"padding: 10px 15px; border-bottom: 1px solid #84848448\">\r\n{item.Quantity}\r\n</td>\r\n<td style=\"padding: 10px 15px; border-bottom: 1px solid #84848448\">\r\n{(item.Quantity * detaillProduct.Price).ToString("C3")}\r\n</td>\r\n</tr>";
+                }
+
+                content = content.Replace("{{products}}", $"{emlment}");
+
+                // Sử dụng HtmlRenderer để chuyển HTML thành PDF và thêm vào document
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    PdfGenerator.AddPdfPages(document, content, PdfSharpCore.PageSize.A4);
+                }
+
+                string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+
+                if (!Directory.Exists(downloadsPath))
+                {
+                    Console.WriteLine("Thư mục Downloads không tồn tại!");
+                    return false;
+                }
+
+                // Đặt tên file PDF
+                string filePathReturn = Path.Combine(downloadsPath, $"{Guid.NewGuid()}.pdf");
+
+                // Lưu file PDF vào thư mục Downloads
+                document.Save(filePathReturn);
+
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 

@@ -9,6 +9,7 @@ namespace DATN_Core.DTO
 {
     public class ProductDetailDTO
     {
+        public int Id { get; set; }
         public string Size { get; set; } = string.Empty;
         public int Price { get; set; }
         public int Quantity { get; set; }

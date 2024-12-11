@@ -39,6 +39,8 @@ namespace DATN_Core.DTO
         public int Status { get; set; }
         
         public decimal TotalPrice { get; set; }
+
+        public string PaymentMethod { get; set; } = string.Empty;
         
         public VoucherDTO Voucher { get; set; }
 

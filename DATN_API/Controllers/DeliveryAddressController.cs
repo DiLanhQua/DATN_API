@@ -25,6 +25,8 @@ namespace DATN_API.Controllers
             try
             {
                 DeliveryAddress res = await _uow.DeliveryAddressRespository.CreateAsync(modal, idOrder);
+                
+                await _uow.OrderReponsitory.UpdateQuantityProducts(idOrder, true);
 
                 return Ok(res);
             }

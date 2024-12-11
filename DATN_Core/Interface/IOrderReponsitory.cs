@@ -26,5 +26,9 @@ namespace DATN_Core.Interface
         string OrderPayVNPay(int total, int id);
 
         Task<bool> AffterBanking(int id);
+
+        Task UpdateQuantityProducts(int idOrder, bool action);
+
+        Task<bool> ExportFilePDF(int idOrder, string filePath);
     }
 }

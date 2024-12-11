@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <section>
+        <div style="text-align: left; width: 600px; margin: 0 auto">
+            <h3 style="text-transform: uppercase">Hóa đơn: #{{id}} - {{status}}</h3>
+            <p style="margin: 0px">Xin chào {{fullName}}</p>
+            <div style="
+            border-bottom: 1px solid gray;
+            margin-top: 10px;
+            line-height: 1.5;
+          ">
+                <h4 style="margin: 0">Thông tin nhận hàng:</h4>
+                <p style="margin: 0">{{phone}}</p>
+                <p style="margin: 0">{{address}}</p>
+                <p style="margin: 0">{{pay}}</p>
+                <p style="margin: 0">Ghi chú: {{note}}</p>
+                <!--<p style="margin: 0">Phí giap hàng: {{feeShip}}</p>
+                <p style="margin: 0; padding-bottom: 10px">Tổng tiền: {{amoount}}</p>-->
+            </div>
+
+            <div style="margin-top: 0px">
+                <div style="
+              display: flex;
+              justify-content: space-between;
+              border-bottom: 1px solid gray;
+              align-items: center;
+            ">
+                    <p>Tổng tiền:</p>
+                </div>
+            </div>
+
+            <table style="width: 100%">
+                {{products}}
+            </table>
+            <p style="padding: 20px 0px; margin: 0px; text-align: justify">
+                Cám ơn bạn đã trải nghiệm tại Cửa hàng trực tuyến Lạnh quá đi Gần đây,
+                bạn đã thêm sản phẩm vào giỏ hàng và hệ thống vẫn lưu giữ trong trường
+                hợp bạn muốn quay lại và tiếp tục mua hàng. Chi tiết Giỏ hàng bao gồm:
+            </p>
+        </div>
+    </section>
+</body>
+</html>

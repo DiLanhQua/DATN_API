@@ -9,6 +9,7 @@ using DATN_Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
+using SixLabors.ImageSharp;
 
 namespace DATN_API.Controllers
 {
@@ -18,10 +19,12 @@ namespace DATN_API.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        public OrderController(IUnitOfWork Uow, IMapper mapper)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public OrderController(IUnitOfWork Uow, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _uow = Uow;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpGet("get-all-order")]
         public async Task<ActionResult> Get()
@@ -117,6 +120,7 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult> GetOrderById(int id)
         {
@@ -179,6 +183,25 @@ namespace DATN_API.Controllers
                 }
             }
             return BadRequest("Invalid signature");
+        }
+
+        [HttpGet("export-file/{id}")]
+        public async Task<IActionResult> ExportFile(int id)
+        {
+            try
+            {
+                var webRoot = _webHostEnvironment.WebRootPath;
+
+                var filePath = Path.Combine(webRoot, "email-templates", "template-order.html"); // Đường dẫn tới hình ảnh trong thư mục wwwroot
+
+                bool response = await _uow.OrderReponsitory.ExportFilePDF(id, filePath);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

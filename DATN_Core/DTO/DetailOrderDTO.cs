@@ -21,7 +21,9 @@ namespace DATN_Core.DTO
         public byte Quantity { get; set; } // Corresponds to the Quantity in DetailOrder
         
         public int OrderId { get; set; }
-        
+
+        public string ColorName { get; set; }
+
         public ProductDetailDTO DetailProduct { get; set; }
 
         public ProductDTO Product { get; set; }
