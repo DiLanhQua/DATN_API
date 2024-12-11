@@ -27,7 +27,6 @@ namespace DATN_Core.DTO
         public int Quantity { get; set; }
         public int ColorId { get; set; }
         public string Gender { get; set; }
-        public string Status { get; set; }
 
     }
     public class ProductDetailDE
@@ -41,6 +40,15 @@ namespace DATN_Core.DTO
         public string Status { get; set; }
         public int ProductId { get; set; }
         public ColorDTO Color { get; set; }
+    }
+
+    public class CreateDetail
+    {
+        public string Size { get; set; } = string.Empty;
+        public int Price { get; set; }
+        public int Quantity { get; set; }
+        public int ColorId { get; set; }
+        public string Gender { get; set; }
     }
 
     public class ReturnProductDetailDTO

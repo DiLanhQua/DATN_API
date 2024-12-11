@@ -75,18 +75,32 @@ namespace DATN_API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
-        [HttpPut("update-detailproduct-by-id")]
-        public async Task<ActionResult> UpdateDetailProduct(int id, int idproduct, ProductDetailUP productDetailDTO)
+        [HttpPost("create-id/{idProduct}")]
+        public async Task<IActionResult> CreateByIdProduct(int idProduct, CreateDetail modal)
+        {
+            try
+            {
+                bool response = await _uow.DetailProductReponsitory.CreateDetail(idProduct, modal);
+
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("update-id/{id}")]
+        public async Task<ActionResult> UpdateDetailProduct(int id, ProductDetailUP productDetailDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _uow.DetailProductReponsitory.UpdateAsync(id, idproduct, productDetailDTO);
+                    var res = await _uow.DetailProductReponsitory.UpdateAsync(id, productDetailDTO);
+
                     return res ? Ok(productDetailDTO) : BadRequest(res);
                 }
                 return BadRequest($"Không tìm thấy id: {id}");

@@ -16,9 +16,10 @@ namespace DATN_Core.Interface
 
         Task<List<ProductDetailDE>> GetProductDetail(int productid);
         Task<bool> AddAsync(ProductDetailDTO ProDTO);
-        Task<bool> UpdateAsync(int id, int idproduct, ProductDetailUP ProDTO);
+        Task<bool> UpdateAsync(int id, ProductDetailUP ProDTO);
         Task<bool> Deleteproduct(int id);
         Task<ProductDetailDE> GetDetail(int id, int productid);
+        Task<bool> CreateDetail(int idProduct, CreateDetail modal);
 
     }
 }

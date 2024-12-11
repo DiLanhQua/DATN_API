@@ -116,6 +116,7 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpDelete("Delete-product/{id}")]
         public async Task<ActionResult> Deteleproduct(int id)
         {
@@ -130,6 +131,26 @@ namespace DATN_API.Controllers
                 return BadRequest($"Not Found Id [{id}]");
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPatch("is-primary/{idImage}")]
+        public async Task<IActionResult> IsPrimaryImage(int idImage)
+        {
+            try
+            {
+                Media response = await _uow.ProductReponsitory.UpdatePrimaryImage(idImage);
+
+                if(response == null)
+                {
+                    throw new Exception("Không có dữ liệu");
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex) 
             {
                 return BadRequest(ex.Message);
             }

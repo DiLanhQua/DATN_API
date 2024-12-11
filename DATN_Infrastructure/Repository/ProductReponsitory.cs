@@ -314,6 +314,34 @@ namespace DATN_Infrastructure.Repository
             return response;
         }
 
+        public async Task<Media> UpdatePrimaryImage(int idImage)
+        {
+            try
+            {
+                Media media = await _context.Medium.FirstOrDefaultAsync(a => a.ImagesId == idImage);
+
+                media.IsPrimary = true;
+
+                _context.Medium.Update(media);
+
+                List<Media> medias = await _context.Medium.Where(a => a.ProductId == media.ProductId && a.ImagesId != idImage).ToListAsync();
+
+                foreach(var item in medias)
+                {
+                    item.IsPrimary = false;
+                    _context.Medium.Update(item);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return media;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<bool> UpdateProduct(int id, ProductUPDTO productUP)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();

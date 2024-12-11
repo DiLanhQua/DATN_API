@@ -99,7 +99,7 @@ namespace DATN_Infrastructure.Repository
             return _mapper.Map<ProductDetailDE>(query);
         }
 
-        public async Task<bool> UpdateAsync(int id,int idproduct, ProductDetailUP ProDTO)
+        public async Task<bool> UpdateAsync(int id, ProductDetailUP ProDTO)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -110,16 +110,19 @@ namespace DATN_Infrastructure.Repository
                 {
                     throw new Exception("Không tìm thấy sản phẩm");
                 }
+
                 exiting.Size = ProDTO.Size;
                 exiting.Price = ProDTO.Price;
                 exiting.Quantity = ProDTO.Quantity;
                 exiting.ColorId = ProDTO.ColorId;
                 exiting.Gender = ProDTO.Gender;
-                exiting.Status = ProDTO.Status;
-                exiting.ProductId = idproduct;
+
+                _context.DetailProducts.Update(exiting);
 
                 await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
+                
                 return true;
             }
             catch (Exception ex)
@@ -134,6 +137,33 @@ namespace DATN_Infrastructure.Repository
             }
 
 
+        }
+
+        public async Task<bool> CreateDetail(int idProduct, CreateDetail modal)
+        {
+            try
+            {
+                DetailProduct detailProduct = new DetailProduct
+                {
+                    Size = modal.Size,
+                    Quantity = modal.Quantity,
+                    ColorId = modal.ColorId,
+                    Gender = modal.Gender,
+                    Price = modal.Price,
+                    Status = "1",
+                    ProductId = idProduct,
+                };
+
+                _context.DetailProducts.Add(detailProduct);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+               return false;
+            }
         }
     }
 }
