@@ -46,7 +46,7 @@ namespace DATN_Infrastructure.Repository
         public async Task SendEmailAsync(string to, string subject, string htmlContent, byte[] qrCodeImage, string qrCodeFileName)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Your Name", _emailDTO.Username));
+            message.From.Add(new MailboxAddress("COZAStore", _emailDTO.Username));
             message.To.Add(new MailboxAddress("", to));
             message.Subject = subject;
 
@@ -60,6 +60,7 @@ namespace DATN_Infrastructure.Repository
 
             using (var client = new SmtpClient())
             {
+                client.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
                 await client.ConnectAsync(_emailDTO.SmtpServer, _emailDTO.SmtpPort, SecureSocketOptions.StartTls);
                 await client.AuthenticateAsync(_emailDTO.Username, _emailDTO.Password);
                 await client.SendAsync(message);

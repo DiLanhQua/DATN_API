@@ -84,10 +84,11 @@ namespace DATN_API.Controllers
 
         //Đăng ký
         [HttpPost("register")]
-        public async Task<ActionResult> Register( RegisterDTO registerDTO)
+        public async Task<ActionResult> Register(RegisterDTO registerDTO)
         {
             try
             {
+
                 if (ModelState.IsValid)
                 {
                     var res = await _uow.LoginReponsitory.RegisterAsync(registerDTO);
@@ -101,26 +102,39 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("up-profile/{accountId}")]
-        public async Task<IActionResult> UpdateProfile(int accountId, [FromForm] UpProfile updateRequest)
+        [HttpPut("up-profile/{id}")]
+        public async Task<IActionResult> UpdateProfile(int id, [FromForm] UpProfile updateRequest)
         {
             try
             {
-                var isUpdated = await _uow.LoginReponsitory.UpdateProfileAsync(accountId, updateRequest);
-                if (isUpdated)
+                var updatedAccount = await _uow.LoginReponsitory.UpdateProfileAsync(id, updateRequest);
+                if (updatedAccount != null)
                 {
-                    return Ok(new { message = "Cập nhật thông tin thành công!" });
+                    return Ok(new
+                    {
+                        Message = "Cập nhật thông tin thành công!",
+                        Account = new
+                        {
+                            Id = updatedAccount.Id,
+                            FullName = updatedAccount.FullName,
+                            Email = updatedAccount.Email,
+                            Phone = updatedAccount.Phone,
+                            Address = updatedAccount.Address,
+                            Image = updatedAccount.Image
+                        }
+                    });
                 }
                 else
                 {
-                    return BadRequest(new { message = "Cập nhật không thành công!" });
+                    return BadRequest(new { Message = "Cập nhật không thành công!" });
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { Message = "Đã xảy ra lỗi trong quá trình cập nhật!", Error = ex.Message });
             }
         }
+
 
 
 

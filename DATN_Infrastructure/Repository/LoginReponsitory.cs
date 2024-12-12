@@ -42,7 +42,7 @@ namespace DATN_Infrastructure.Repository
             }
             var result = new ProfileDTO
             {
-               
+
                 FullName = query.FullName,
                 UserName = query.UserName,
                 Email = query.Email,
@@ -93,7 +93,7 @@ namespace DATN_Infrastructure.Repository
         }
 
         public async Task<Account> Login(string username, string password)
-            {
+        {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 throw new ArgumentException("Tên đăng nhập và mật khẩu không hợp lệ!");
 
@@ -107,7 +107,7 @@ namespace DATN_Infrastructure.Repository
                 if (account == null)
                     return null;
 
-                
+
 
                 var loginHistory = new Login
                 {
@@ -133,6 +133,16 @@ namespace DATN_Infrastructure.Repository
         //Đăng ký
         public async Task<bool> RegisterAsync(RegisterDTO registerDTO)
         {
+            // Kiểm tra nếu username đã tồn tại
+            var isUsernameTaken = await _context.Accounts
+                .AnyAsync(a => a.UserName == registerDTO.UserName);
+
+            if (isUsernameTaken)
+            {
+                throw new Exception("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+            }
+
+
             var register = new Account
             {
                 FullName = registerDTO.FullName,
@@ -216,11 +226,6 @@ namespace DATN_Infrastructure.Repository
             return tk.Id;
         }
 
-        public Task<bool> UpdateProfileAsync(int id, UpProfile upprofile)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> CreartImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -240,6 +245,41 @@ namespace DATN_Infrastructure.Repository
                 await file.CopyToAsync(stream);
             }
             return $"images/account/{accountName}";
+        }
+
+        public async Task<Account> UpdateProfileAsync(int id, UpProfile upprofile)
+        {
+            var ex = await _context.Accounts.FindAsync(id);
+            if (ex == null)
+            {
+                throw new Exception("Người dùng không tồn tại");
+            }
+
+            ex.FullName = upprofile.FullName;
+            ex.Phone = upprofile.Phone;
+            ex.Email = upprofile.Email;
+            ex.Password = upprofile.Password;
+            ex.Address = upprofile.Address;
+            ex.Image = await CreartImage(upprofile.Image);
+
+            _context.Accounts.Update(ex);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException esx)
+            {
+                Console.WriteLine($"DbUpdateException: {esx.InnerException?.Message}");
+                throw;
+            }
+            catch (Exception esx)
+            {
+                Console.WriteLine($"Exception: {esx.Message}");
+                throw;
+            }
+
+
+            return ex;
         }
     }
 }

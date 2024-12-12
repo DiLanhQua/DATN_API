@@ -28,6 +28,14 @@ namespace DATN_API.Controllers
             return Ok(new Pagination<AccountDTO>(brandParams.Pagesize, brandParams.PageNumber,
                 src.totalItems, result));
         }
+        [HttpGet("get-all-staff")]
+        public async Task<ActionResult> GetStaff([FromHeader] Params brandParams)
+        {
+            var src = await _uow.AccountReponsitory.GetStaff(brandParams);
+            var result = _mapper.Map<IReadOnlyList<AccountDTO>>(src.AccountsDTO);
+            return Ok(new Pagination<AccountDTO>(brandParams.Pagesize, brandParams.PageNumber,
+                src.totalItems, result));
+        }
         [HttpGet("getDe-login/{idaccount}")]
         public async Task<LoginCT> GetDeLogin(int idaccount)
         {

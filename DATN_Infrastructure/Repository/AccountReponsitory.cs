@@ -44,6 +44,7 @@ namespace DATN_Infrastructure.Repository
                 Password =  accountDTO.Password,
                 Role = accountDTO.Role,
                 Address = accountDTO.Address,
+                Status = accountDTO.Status,
                 Image = await CreartImage(accountDTO.Picture),
             };
             using var transaction = _context.Database.BeginTransaction();
@@ -61,11 +62,20 @@ namespace DATN_Infrastructure.Repository
                 _context.Logins.Add(login);
                 await _context.SaveChangesAsync();
 
-                var maxn = $"https://localhost:7048/api/Account/xn-account/{login.AccountId}";
+                var qrCodeContent = $"Tên nhân viên: {nv.FullName}\nSĐT: {nv.Phone}\nEmail: {nv.Email}\nChức vụ: {nv.Role}\nĐịa chỉ: {nv.Address}\nUsername: {nv.UserName}\npass: {nv.Password}";
+                var qrCodeImage = await _qrCoder.QRCodeAsync(qrCodeContent);
+
+                string qrCodeFileName = "qrcode.png";
+
                 var emailBody = new StringBuilder();
-                emailBody.AppendLine("Cảm ơn bạn đã đăng ký!");
-                emailBody.AppendLine($"<br/><br/><a href=\"{maxn}\" style=\"padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none;\">Xác nhận tài khoản</a>");
-                await _email.SendEmail(nv.Email, "Xác nhận đăng ký", emailBody.ToString());
+                emailBody.AppendLine("Tài khoản đã được thay đổi!");
+                emailBody.AppendLine("Vui lòng quét mã QR dưới đây để xác nhận tài khoản đã được thay đổi của bạn:");
+                emailBody.AppendLine($"<img src='cid:{qrCodeFileName}' alt='QR Code' />");
+
+                await _email.SendEmailAsync(nv.Email, "Xác nhận tài khoản đã được thay đổi", emailBody.ToString(), qrCodeImage, qrCodeFileName);
+
+
+
 
                 await transaction.CommitAsync();
                 return true;
@@ -130,7 +140,7 @@ namespace DATN_Infrastructure.Repository
             // Truy vấn cơ sở dữ liệu để kiểm tra tài khoản
             return await _context.Accounts!
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UserName == username && x.Password == password && x.Role == 1);
+                .FirstOrDefaultAsync(x => x.UserName == username && x.Password == password && x.Role == 1 || x.Role == 0);
         }
 
 
@@ -153,7 +163,7 @@ namespace DATN_Infrastructure.Repository
                 ex.FullName = upAccount.FullName;
                 ex.Phone = upAccount.Phone;
                 ex.Email = upAccount.Email;
-                ex.Password = _passwordHasher.HashPassword(null, upAccount.Password); // Bảo mật mật khẩu
+                ex.Password =  upAccount.Password; // Bảo mật mật khẩu
                 ex.UserName = upAccount.UserName;
                 ex.Address = upAccount.Address;
                 ex.Role = upAccount.Role;
@@ -162,7 +172,7 @@ namespace DATN_Infrastructure.Repository
                 _context.Accounts.Update(ex);
                 await _context.SaveChangesAsync();
 
-                var qrCodeContent = $"Tên nhân viên: {ex.FullName}\nSĐT: {ex.Phone}\nEmail: {ex.Email}\nChức vụ: {ex.Role}\nĐịa chỉ: {ex.Address}\nTên đăng nhập: {ex.UserName}\nMật khẩu: {ex.Password}";
+                var qrCodeContent = $"Tên nhân viên: {ex.FullName}\nSĐT: {ex.Phone}\nEmail: {ex.Email}\nChức vụ: {ex.Role}\nĐịa chỉ: {ex.Address}\nUsername: {ex.UserName}\npass: {ex.Password}";
                 var qrCodeImage = await _qrCoder.QRCodeAsync(qrCodeContent);
 
                 string qrCodeFileName = "qrcode.png";
@@ -271,6 +281,21 @@ namespace DATN_Infrastructure.Repository
             {
                 throw new Exception("Đã xảy ra lỗi khi un lock tài khoản.", ex);
             }
+        }
+        public async Task<ReturnAccountDTO> GetStaff(Params brandParams)
+        {
+            var result = new ReturnAccountDTO();
+            var query = await _context.Accounts!.Where(p => p.Role == 1).AsNoTracking().ToListAsync();
+            if (!string.IsNullOrEmpty(brandParams.Search))
+            {
+                query = query.Where(p => p.FullName.ToString()
+                .ToLower().Contains(brandParams.Search)).ToList();
+            }
+            query = query.Skip((brandParams.Pagesize) * (brandParams.PageNumber - 1))
+                .Take(brandParams.Pagesize).ToList();
+            result.AccountsDTO = _mapper.Map<List<AccountDTO>>(query);
+            result.totalItems = query.Count();
+            return result;
         }
     }
 }

@@ -54,8 +54,9 @@ namespace DATN_Core.DTO
         public string Password { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty; 
         public byte Role { get; set; }
+        public byte Status { get; set; }
         public IFormFile Picture { get; set; }
     }
     public class UpAccount
