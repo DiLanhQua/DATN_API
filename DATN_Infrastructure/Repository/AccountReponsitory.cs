@@ -68,8 +68,9 @@ namespace DATN_Infrastructure.Repository
                 string qrCodeFileName = "qrcode.png";
 
                 var emailBody = new StringBuilder();
-                emailBody.AppendLine("Tài khoản đã được thay đổi!");
-                emailBody.AppendLine("Vui lòng quét mã QR dưới đây để xác nhận tài khoản đã được thay đổi của bạn:");
+                emailBody.AppendLine("Chào mừng đến với COZAStore!");
+                
+                emailBody.AppendLine("Mã để đăng nhập vào hệ thống vui lòng không chia sẻ:");
                 emailBody.AppendLine($"<img src='cid:{qrCodeFileName}' alt='QR Code' />");
 
                 await _email.SendEmailAsync(nv.Email, "Xác nhận tài khoản đã được thay đổi", emailBody.ToString(), qrCodeImage, qrCodeFileName);
@@ -178,8 +179,9 @@ namespace DATN_Infrastructure.Repository
                 string qrCodeFileName = "qrcode.png";
 
                 var emailBody = new StringBuilder();
-                emailBody.AppendLine("Tài khoản đã được thay đổi!");
-                emailBody.AppendLine("Vui lòng quét mã QR dưới đây để xác nhận tài khoản đã được thay đổi của bạn:");
+                emailBody.AppendLine("Chào mừng đến với COZAStore!");
+
+                emailBody.AppendLine("Mã để đăng nhập vào hệ thống vui lòng không chia sẻ:");
                 emailBody.AppendLine($"<img src='cid:{qrCodeFileName}' alt='QR Code' />");
 
                 await _email.SendEmailAsync(ex.Email, "Xác nhận tài khoản đã được thay đổi", emailBody.ToString(), qrCodeImage, qrCodeFileName);
