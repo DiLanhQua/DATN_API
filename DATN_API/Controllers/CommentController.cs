@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DATN_API.Helper;
 using System.Threading.Tasks;
 using DATN_Core.DTO;
+using Humanizer;
 
 namespace DATN_API.Controllers
 {
@@ -90,6 +91,59 @@ namespace DATN_API.Controllers
                     return Ok($"Comment with id [{id}] deleted successfully.");
                 }
                 return NotFound($"Comment with id [{id}] not found.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("check-is-comment")]
+        public async Task<ActionResult> CheckIsComment([FromBody]CheckIsCommentDTO dto)
+        {
+            try
+            {
+                var check = await _uow.CommentRepository.CheckIsComment(dto);
+                if (check == null)
+                {
+                    return BadRequest("CheckIsComment is BadRequest");
+                }
+                return Ok(check);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("add-comment-inproduct")]
+        public async Task<ActionResult> AddCommentInProduct(AddCommentDTO dto)
+        {
+            try
+            {
+                var check = await _uow.CommentRepository.AddComment(dto);
+                if (check == null)
+                {
+                    return BadRequest("AddCommentInProduct is BadRequest");
+                }
+                return Ok(check);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get_comment-by-productid/{id}")]
+        public async Task<IActionResult> GetCommentByProductId(int id, int pageNumber)
+        {
+            try
+            {
+                var comment = await _uow.CommentRepository.GetCommentByProductId(id, pageNumber);
+                return Ok(new
+                {
+                    items = comment.Comments,
+                    hisMore = comment.HasMore,
+                });
             }
             catch (Exception ex)
             {

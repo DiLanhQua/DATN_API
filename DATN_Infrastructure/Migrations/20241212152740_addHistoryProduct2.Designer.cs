@@ -4,6 +4,7 @@ using DATN_Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DATN_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241212152740_addHistoryProduct2")]
+    partial class addHistoryProduct2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,13 +200,7 @@ namespace DATN_Infrastructure.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DetailProductId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TimeCreated")
@@ -212,8 +209,6 @@ namespace DATN_Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("DetailProductId");
 
                     b.HasIndex("ProductId");
 
@@ -361,9 +356,6 @@ namespace DATN_Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -626,12 +618,6 @@ namespace DATN_Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DATN_Core.Entities.DetailProduct", "DetailProduct")
-                        .WithMany()
-                        .HasForeignKey("DetailProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DATN_Core.Entities.Product", "Product")
                         .WithMany("Comment")
                         .HasForeignKey("ProductId")
@@ -639,8 +625,6 @@ namespace DATN_Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-
-                    b.Navigation("DetailProduct");
 
                     b.Navigation("Product");
                 });
