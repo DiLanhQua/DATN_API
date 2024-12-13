@@ -29,7 +29,7 @@ namespace DATN_API.Controllers
                 src.totalItems, result));
         }
         [HttpGet("get-all-staff")]
-        public async Task<ActionResult> GetStaff([FromHeader] Params brandParams)
+        public async Task<ActionResult> GetStaff([FromQuery] Params brandParams)
         {
             var src = await _uow.AccountReponsitory.GetStaff(brandParams);
             var result = _mapper.Map<IReadOnlyList<AccountDTO>>(src.AccountsDTO);

@@ -16,7 +16,7 @@ namespace DATN_Infrastructure.Data.Config
             builder.Property(x => x.Id).IsRequired();
             builder.Property(x => x.Action).HasMaxLength(50);
             builder.Property(x => x.TimeStamp);
-            builder.Property(x => x.Description).HasMaxLength(255);
+            builder.Property(x => x.Description);
         }
     }
 }

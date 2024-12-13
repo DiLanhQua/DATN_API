@@ -14,8 +14,8 @@ namespace DATN_Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.Property(x => x.Id).IsRequired();
-            builder.Property(x => x.ProductName).HasMaxLength(50);
-            builder.Property(x => x.Description).HasMaxLength(255);
+            builder.Property(x => x.ProductName).HasMaxLength(255);
+            builder.Property(x => x.Description);
         }
     }
 }

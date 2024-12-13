@@ -55,7 +55,7 @@ namespace DATN_Infrastructure.Repository
                 var login = new Login
                 {
                     AccountId = nv.Id,
-                    Action = "Chờ xác nhận",
+                    Action = "Hoạt động",
                     TimeStamp = DateTime.Now.AddMinutes(1),
                     Description = "",
                 };

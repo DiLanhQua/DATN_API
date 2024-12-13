@@ -14,7 +14,7 @@ namespace DATN_Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Voucher> builder)
         {
             builder.Property(x => x.Id).IsRequired();
-            builder.Property(x => x.VoucherName).HasMaxLength(50);
+            builder.Property(x => x.VoucherName).HasMaxLength(100);
             builder.Property(x => x.TimeStart);
             builder.Property(x => x.TimeEnd);
             builder.Property(x => x.DiscountType);

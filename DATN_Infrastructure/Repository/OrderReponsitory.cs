@@ -156,7 +156,7 @@ namespace DATN_Infrastructure.Repository
             var result = new ReturnOrder();
 
             // Fetch orders including details
-            var orders = await _context.Orders
+            var orders = await _context.Orders 
                 .Include(o => o.DetailOrder)
                 .Include(o => o.Account)
                 .Include(a => a.DeliveryAddress)

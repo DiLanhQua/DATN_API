@@ -30,6 +30,7 @@ namespace DATN_Core.Interface
         public ILoginReponsitory LoginReponsitory { get; }
 
         public IDeliveryAddressRespository DeliveryAddressRespository { get; }
+        public IStatisticsReponsitory StatisticsReponsitory { get; }
 
     }
 }

@@ -15,7 +15,7 @@ namespace DATN_Infrastructure.Data.Config
         {
             builder.Property(x => x.Id).IsRequired();
             builder.Property(x => x.HeadLine).HasMaxLength(100);
-            builder.Property(x => x.Content).HasMaxLength(255);
+            builder.Property(x => x.Content);
             builder.Property(x => x.DatePush);
         }
     }

@@ -14,7 +14,7 @@ namespace DATN_Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Brand> builder)
         {
             builder.Property(x => x.Id).IsRequired();
-            builder.Property(x => x.BrandName).HasMaxLength(50);
+            builder.Property(x => x.BrandName).HasMaxLength(100);
             builder.Property(x=>x.Country).HasMaxLength(50);
             builder.Property(x => x.Image);
         }
