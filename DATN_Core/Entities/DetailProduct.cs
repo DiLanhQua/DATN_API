@@ -8,7 +8,7 @@ namespace DATN_Core.Entities
 {
     public class DetailProduct: BasicEntity<int>
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
 
         public string Size { get; set; }
 

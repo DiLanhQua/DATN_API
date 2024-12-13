@@ -27,6 +27,7 @@ namespace DATN_Infrastructure.Data
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Voucher> Vouchers { get; set; }
         public virtual DbSet<WishList> WishLists { get; set; }
+        public virtual DbSet<HistoryByProduct> HistoryByProducts { get; set; }
 
         public virtual DbSet<Color> Colors { get; set; }
 

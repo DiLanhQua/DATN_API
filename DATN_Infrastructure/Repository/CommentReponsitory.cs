@@ -7,6 +7,7 @@ using DATN_Infrastructure.Data;
 using DATN_Infrastructure.Data.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using PdfSharpCore.Pdf.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -92,6 +93,80 @@ namespace DATN_Infrastructure.Repository
             }
             return false;
         }
+
+        public async Task<bool> CheckIsComment(CheckIsCommentDTO dto)
+        {
+            var historyByProduct = await _context.HistoryByProducts.Where(x => x.ProductId == dto.ProductId && x.AccountId == dto.AccountId && x.DetailProductId == dto.DetailProductId && x.Status == 1).FirstOrDefaultAsync();
+            if (historyByProduct == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> AddComment(AddCommentDTO commentDTO)
+        {
+            if(commentDTO == null)
+            {
+                return false;
+            }
+            var checkIsCommentDTO = _mapper.Map<CheckIsCommentDTO>(commentDTO);
+            var check = await CheckIsComment(checkIsCommentDTO);
+            if(check == null || check == false)
+            {
+                return false;
+            }
+            var comment = _mapper.Map<Comment>(commentDTO);
+            _context.Add(comment);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                var historyByProduct = await _context.HistoryByProducts
+                    .Where(x => x.ProductId == commentDTO.ProductId && x.DetailProductId == commentDTO.DetailProductId && x.AccountId == commentDTO.AccountId && x.Status == 1).FirstOrDefaultAsync();
+                if (historyByProduct != null)
+                {
+                    historyByProduct.Status = 2;
+                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<(List<GetCommentDTO> Comments, bool HasMore)> GetCommentByProductId(int id, int pageNumber)
+        {
+            int pageSize = 5;
+
+            var commentsQuery = _context.Comments
+                .Where(x => x.ProductId == id)
+                .Include(x => x.DetailProduct)
+                .Include(x => x.Account)
+                .OrderByDescending(x => x.TimeCreated);
+
+            // Tính toán số lượng bình luận cần lấy dựa trên pageNumber
+            int skipCount = (pageNumber - 1) * pageSize;
+            var comments = new List<Comment>();
+
+            for (int i = 1; i <= pageNumber; i++)
+            {
+                var pageComments = await commentsQuery
+                    .Skip((i - 1) * pageSize) // Bỏ qua các bình luận của các trang trước
+                    .Take(pageSize) // Lấy bình luận của trang hiện tại
+                    .ToListAsync();
+
+                comments.AddRange(pageComments); // Thêm bình luận từ trang hiện tại vào danh sách
+            }
+
+            bool hasMore = comments.Count == pageNumber * pageSize; // Kiểm tra xem có còn bình luận để tải
+
+            // Chuyển đổi thành DTO
+            var commentDTOs = _mapper.Map<List<GetCommentDTO>>(comments);
+
+            return (commentDTOs, hasMore); // Trả về cả danh sách bình luận và cờ xác định có còn bình luận để tải không
+        }
+
+
+
 
 
     }

@@ -84,11 +84,41 @@ namespace DATN_Infrastructure.Repository
                 try
                 {
                     _context.Orders.Update(or);
-                    await _context.SaveChangesAsync();
+                    
+                    if(await _context.SaveChangesAsync() > 0)
+                    {
+                        var detailOder = await _context.DetailOrders.Where(x => x.OrderId == or.Id).ToListAsync();
+                        if (detailOder != null)
+                        {
+                            foreach (var item in detailOder)
+                            {
+                                var detailProduct = await _context.DetailProducts.Where(x => x.Id == item.DetailProductId).FirstOrDefaultAsync();
+                                if (detailProduct != null)
+                                {
+                                     var historyByProduct = new HistoryByProduct
+                                    {
+                                        ProductId = detailProduct.Id,
+                                        DetailProductId = detailProduct.Id,
+                                        AccountId = or.AccountId,
+                                    };
+                                    if (detailProduct != null)
+                                    {
+                                        _context.Add(historyByProduct);
+                                        _context.SaveChanges();
+                                    }
+                                }
+                            }
+                        }
 
-                    if(or.StatusOrder == 5)
+                    }
+
+
+                    if (or.StatusOrder == 5)
                     {
                         await UpdateQuantityProducts(id, false); // trừ số lượng khi giao hàng thành công
+                        //product
+                        
+                        
                     }
 
                     Account admin = _context.Accounts.FirstOrDefault(a => a.Role == 1);
