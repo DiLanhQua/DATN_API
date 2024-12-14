@@ -43,6 +43,7 @@ namespace YourNamespace.Controllers
                     var convertHtml = await XuLyHoaDonThanhToan(htmlContent,request.idOrder,account.Result.Email);
                 // Gửi email
                 await _emailService.SendEmail(account.Result.Email, "Hoá đơn điện tử", convertHtml);
+
                 return Ok("Email sent successfully.");
             }
             catch (System.Exception ex)
@@ -106,14 +107,7 @@ namespace YourNamespace.Controllers
                     itemHtmlContent = itemHtmlContent.Replace("{{size}}", item.DetailProduct.Size);
                     itemHtmlContent = itemHtmlContent.Replace("{{DonGia}}", item.DetailProduct.Price.ToString());
                     itemHtmlContent = itemHtmlContent.Replace("{{soLuong}}", item.Quantity.ToString());
-                    itemHtmlContent = itemHtmlContent.Replace(
-    "{{TongTien}}",
-    (Convert.ToInt32(item.Quantity) * Convert.ToInt32(item.DetailProduct.Price)).ToString()
-);
-
-
-
-
+                    itemHtmlContent = itemHtmlContent.Replace("{{TongTien}}", (Convert.ToInt32(item.Quantity) * Convert.ToInt32(item.DetailProduct.Price)).ToString());
                     finalHtmlContent.Append(itemHtmlContent);
                 }
 

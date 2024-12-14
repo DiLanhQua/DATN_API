@@ -60,6 +60,8 @@ namespace DATN_Infrastructure.Data.DTO
 
         public decimal Price { get; set; }
 
+        public bool Status { get; set; }
+
     }
     public class ProductUPDTO
     {
@@ -96,6 +98,8 @@ namespace DATN_Infrastructure.Data.DTO
         public string ImagePrimary {  get; set;} = string.Empty;
 
         public decimal Price { get; set; }
+
+        public bool Status { get; set; }
     
         public ProductDetailDE DetailProducts { get; set; }
     }

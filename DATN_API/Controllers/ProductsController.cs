@@ -155,5 +155,20 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPatch("change-status/{id}")]
+        public async Task<IActionResult> ChangeStatus(int id)
+        {
+            try
+            {
+                bool response = await _uow.ProductReponsitory.ChangeStatus(id);
+
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

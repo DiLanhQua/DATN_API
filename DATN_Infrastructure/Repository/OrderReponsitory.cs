@@ -439,6 +439,8 @@ namespace DATN_Infrastructure.Repository
 
                 content = content.Replace("{{pay}}", $"{order.PaymentMethod}");
 
+                content = content.Replace("{{ngayTao}}", $"{DateTime.Now}");
+
                 string emlment = "";
 
                 List<DetailOrder> detailOrderList = await _context.DetailOrders.Where(a => a.OrderId == idOrder).ToListAsync();

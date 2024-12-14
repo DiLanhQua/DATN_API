@@ -14,6 +14,7 @@ namespace DATN_Core.Entities
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public int BrandId { get; set; }
+        public bool Status { get; set; } = true;
         public virtual Brand Brand { get; set; }
         public virtual ICollection<DetailProduct> DetailProduct { get; set; } = new HashSet<DetailProduct>();
         public virtual ICollection<Media> Media { get; set; } = new HashSet<Media>();

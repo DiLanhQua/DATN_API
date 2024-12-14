@@ -2,45 +2,88 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Hóa Đơn Điện Tử</title>
 </head>
-<body>
-    <section>
-        <div style="text-align: left; width: 600px; margin: 0 auto">
-            <h3 style="text-transform: uppercase">Hóa đơn: #{{id}} - {{status}}</h3>
-            <p style="margin: 0px">Xin chào {{fullName}}</p>
-            <div style="
-            border-bottom: 1px solid gray;
-            margin-top: 10px;
-            line-height: 1.5;
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0">
+    <section style="width: 100%; padding: 20px 0">
+        <div style="
+          text-align: left;
+          width: 100%;
+          max-width: 794px;
+          margin: 0 auto;
+          background: #fff;
+          padding: 20px;
+          border: 1px solid #ddd;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+        ">
+            <h3 style="
+            text-transform: uppercase;
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
           ">
-                <h4 style="margin: 0">Thông tin nhận hàng:</h4>
-                <p style="margin: 0">{{phone}}</p>
-                <p style="margin: 0">{{address}}</p>
-                <p style="margin: 0">{{pay}}</p>
-                <p style="margin: 0">Ghi chú: {{note}}</p>
-                <!--<p style="margin: 0">Phí giap hàng: {{feeShip}}</p>
-                <p style="margin: 0; padding-bottom: 10px">Tổng tiền: {{amoount}}</p>-->
+                Hóa đơn: #{{id}}
+            </h3>
+            <p style="margin: 5px 0; font-size: 14px; color: #555">
+                Xin chào <strong>{{fullName}}</strong>,
+            </p>
+
+            <div style="
+            border-bottom: 1px solid #ddd;
+            margin-top: 10px;
+            padding-bottom: 15px;
+          ">
+                <h4 style="
+              margin: 0;
+              font-size: 16px;
+              font-weight: bold;
+              color: #333;
+            ">
+                    Thông tin nhận hàng:
+                </h4>
+                <p style="margin: 5px 0; font-size: 14px; color: #555">SDT: {{phone}}</p>
+                <p style="margin: 5px 0; font-size: 14px; color: #555">
+                    Địa chỉ: {{address}}
+                </p>
+                <p style="margin: 5px 0; font-size: 14px; color: #555">
+                    Phương thức thanh toán: {{pay}}
+                </p>
+                <p style="margin: 5px 0; font-size: 14px; color: #555">Ghi chú: {{note}}</p>
+                <p style="margin: 5px 0; font-size: 14px; color: #555">Ngày tạo: {{ngayTao}}</p>
             </div>
 
-            <div style="margin-top: 0px">
+            <div style="margin-top: 20px; padding-top: 10px">
                 <div style="
               display: flex;
               justify-content: space-between;
-              border-bottom: 1px solid gray;
-              align-items: center;
+              border-bottom: 1px solid #ddd;
+              padding-bottom: 10px;
             ">
-                    <p>Tổng tiền:</p>
+                    <p style="margin: 0; font-size: 14px; font-weight: bold; color: #333">
+                        Tổng tiền:
+                    </p>
+                    <p style="margin: 0; font-size: 14px; color: #333">{{amount}}</p>
                 </div>
             </div>
 
-            <table style="width: 100%">
-                {{products}}
+            <table style="
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+          ">
+                    {{products}}
             </table>
-            <p style="padding: 20px 0px; margin: 0px; text-align: justify">
-                Cám ơn bạn đã trải nghiệm tại Cửa hàng trực tuyến Lạnh quá đi Gần đây,
-                bạn đã thêm sản phẩm vào giỏ hàng và hệ thống vẫn lưu giữ trong trường
-                hợp bạn muốn quay lại và tiếp tục mua hàng. Chi tiết Giỏ hàng bao gồm:
+
+            <p style="
+            padding: 20px 0;
+            margin: 0px;
+            text-align: justify;
+            font-size: 14px;
+            color: #555;
+          ">
+                Cám ơn bạn đã trải nghiệm tại Cửa hàng trực tuyến COZAStore. Chúc quý
+                khách có một trải nghiệm tuyệt vời tại COZAStore.
             </p>
         </div>
     </section>

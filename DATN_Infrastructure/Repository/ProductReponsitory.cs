@@ -92,6 +92,28 @@ namespace DATN_Infrastructure.Repository
             }
 
         }
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            try
+            {
+                Product product = await _context.Products.FindAsync(id);
+
+                product.Status = !product.Status;
+
+                _context.Products.Update(product);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        
+        }
+
         public async Task<string> CreateImage(string base64String)
         {
             if (string.IsNullOrEmpty(base64String))
@@ -117,8 +139,6 @@ namespace DATN_Infrastructure.Repository
 
             return $"images/products/{fileName}";
         }
-
-
 
         public async Task<bool> Deleteproduct(int id)
         {
@@ -187,6 +207,7 @@ namespace DATN_Infrastructure.Repository
                     BrandId = p.BrandId,
                     ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null,
                     Price = detailProduct.Price | 0,
+                    Status = p.Status,
                 };
 
                 response.Add(productDEDTO);
@@ -202,6 +223,7 @@ namespace DATN_Infrastructure.Repository
             var result = new ProductsUserReturnDtos();
 
             var query = _context.Products
+                        .Where(a => a.Status == true)
                         .Include(p => p.Category)
                         .Include(p => p.Brand)
                         .AsNoTracking()
@@ -252,6 +274,7 @@ namespace DATN_Infrastructure.Repository
                     BrandId = p.BrandId,
                     ImagePrimary = primaryImages.ContainsKey(p.Id) ? primaryImages[p.Id] : null,
                     Price = detailProduct.Price | 0,
+                    Status = p.Status,
                 };
 
                 response.Add(productDEDTO);

@@ -82,6 +82,7 @@ namespace DATN_Infrastructure.Repository
                     return false;
 
                 var htmlContent = await System.IO.File.ReadAllTextAsync(htmlFilePath);
+
                 var convertedHtml = await XuLyHoaDonThanhToan(htmlContent, request.idOrder, account.Email);
 
                 await SendEmail(account.Email, "Hoá đơn điện tử", convertedHtml);

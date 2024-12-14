@@ -19,6 +19,7 @@ namespace DATN_Core.Interface
         Task<bool> Deleteproduct(int id);
         Task<List<ProductsHotSaleDtos>> GetProductsHotSale();
         Task<Media> UpdatePrimaryImage(int idImage);
+        Task<bool> ChangeStatus (int id);
        
     }
 }
