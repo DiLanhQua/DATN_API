@@ -51,6 +51,12 @@ namespace DATN_API.Controllers
                     return Unauthorized(new { Message = "Tên đăng nhập hoặc mật khẩu không chính xác!" });
                 }
 
+                // Kiểm tra trạng thái tài khoản
+                if (account.Status != 1)
+                {
+                    return Forbid(new { Message = "Tài khoản của bạn không hoạt động. Vui lòng xác nhận tài khoản bằng Email." });
+                }
+
                 return Ok(new
                 {
                     Message = "Đăng nhập thành công!",
@@ -67,6 +73,10 @@ namespace DATN_API.Controllers
             }
         }
 
+        private IActionResult Forbid(object value)
+        {
+            throw new NotImplementedException();
+        }
 
         [HttpGet("get-all-login")]
         public async Task<IActionResult> GetAll([FromQuery] Params loginParams)
