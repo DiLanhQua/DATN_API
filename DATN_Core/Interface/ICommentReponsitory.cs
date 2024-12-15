@@ -17,5 +17,6 @@ namespace DATN_Core.Interface
         Task<bool> CheckIsComment(CheckIsCommentDTO dto);
         Task<bool> AddComment(AddCommentDTO commentDTO);
         Task<(List<GetCommentDTO> Comments, bool HasMore)> GetCommentByProductId(int id, int pageNumber);
+        Task<double> GetRatingByProductId(int productId);
     }
 }

@@ -165,6 +165,19 @@ namespace DATN_Infrastructure.Repository
             return (commentDTOs, hasMore); // Trả về cả danh sách bình luận và cờ xác định có còn bình luận để tải không
         }
 
+        public async Task<double> GetRatingByProductId(int productId)
+        {
+            var comment = await _context.Comments
+                .Where(x => x.ProductId == productId).ToListAsync();
+            if (!comment.Any())
+            {
+                return 0;
+            }
+            double productRating = Math.Round(comment.Average(x => x.Rating), 1);
+
+            return productRating;
+        }
+
 
 
 

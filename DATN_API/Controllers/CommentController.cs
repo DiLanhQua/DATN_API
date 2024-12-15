@@ -150,5 +150,19 @@ namespace DATN_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-rating-by-product-id/{id}")]
+        public async Task<IActionResult> GetRatingByProduct(int id)
+        {
+            try
+            {
+                var rating = await _uow.CommentRepository.GetRatingByProductId(id);
+                return Ok(rating);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

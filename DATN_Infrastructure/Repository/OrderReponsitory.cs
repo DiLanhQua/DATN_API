@@ -97,7 +97,7 @@ namespace DATN_Infrastructure.Repository
                                 {
                                      var historyByProduct = new HistoryByProduct
                                     {
-                                        ProductId = detailProduct.Id,
+                                        ProductId = detailProduct.ProductId,
                                         DetailProductId = detailProduct.Id,
                                         AccountId = or.AccountId,
                                     };
