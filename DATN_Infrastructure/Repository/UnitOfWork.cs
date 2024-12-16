@@ -69,7 +69,7 @@ namespace DATN_Infrastructure.Repository
             CommentRepository = new CommentRepository(_context, _mapper);
             VoucherRepository = new VoucherRepository(_context, _mapper);
             AccountReponsitory = new AccountReponsitory(_context, _mapper, _passwordHasher, _email, _qrCoder);
-            EmailReponsitory = new EmailReponsitory(emailDTO,_context,_mapper);
+            EmailReponsitory = new EmailReponsitory(emailDTO,_context,_mapper, _qrCoder);
             CartReponsitory = new CartReponsitory(_context, _mapper);
             ColorReponsitory = new ColorRepository(_context, _mapper);
             CategoryReponsitory = new CategoryReponsitory(_context, _fileProvider, _mapper);

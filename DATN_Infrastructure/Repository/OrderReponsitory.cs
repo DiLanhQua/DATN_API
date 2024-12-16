@@ -339,6 +339,7 @@ namespace DATN_Infrastructure.Repository
                 FullName = order.Account?.FullName, 
                 NumberPhone = deliveryAddress?.Phone, 
                 Status = order.StatusOrder,
+                Reason = order.Reason,
                 Address = deliveryAddress?.Address,
                 Voucher = _mapper.Map<VoucherDTO>(voucher) ,
                 DetailOrder = detailOrderRes,

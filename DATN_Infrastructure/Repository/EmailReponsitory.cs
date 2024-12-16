@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DATN_Core.DTO;
 using DATN_Core.Interface;
+using DATN_Core.Sharing;
 using DATN_Infrastructure.Data;
 using DATN_Infrastructure.Data.DTO;
 using MailKit.Net.Smtp;
@@ -16,14 +17,17 @@ namespace DATN_Infrastructure.Repository
         private readonly EmailDTO _emailDTO;
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly QrCoder _qrCoder;
 
 
-        public EmailReponsitory(IOptions<EmailDTO> emailDTO,ApplicationDbContext applicationDbContext,IMapper mapper) 
+        public EmailReponsitory(IOptions<EmailDTO> emailDTO, ApplicationDbContext applicationDbContext, IMapper mapper, QrCoder qrCoder)
         {
             _emailDTO = emailDTO.Value;
             _context = applicationDbContext;
             _mapper = mapper;
+            _qrCoder = qrCoder;
         }
+
         public async Task SendEmail(string email, string subject, string htmlContent)
         {
             var mess = new MimeMessage();
@@ -96,67 +100,99 @@ namespace DATN_Infrastructure.Repository
 
         public async Task<string> XuLyHoaDonThanhToan(string htmlContent, int idThanhToan, string email)
         {
-            //lấy thanh toán1
-
+            // Lấy hóa đơn
             var bill = await GetOrderById(idThanhToan);
             if (bill == null)
             {
                 return "";
             }
+
+            // Thay thế thông tin cơ bản trong HTML
             htmlContent = htmlContent.Replace("{{MaHoaDon}}", bill.OrderCode.ToString());
             htmlContent = htmlContent.Replace("{{NgayTaoHoaDon}}", DateTime.Now.ToString());
-
-            //gán thông tin nhân viên và khách hàng
             htmlContent = htmlContent.Replace("{{TenKhachHangThanhToan}}", bill.FullName);
             htmlContent = htmlContent.Replace("{{SoDienThoaiKhachHangThanhToan}}", bill.NumberPhone);
             htmlContent = htmlContent.Replace("{{EmailKhachHangThanhToan}}", email);
 
+            // Lấy mẫu hàng sản phẩm trong HTML
+            int startTrIndex = htmlContent.IndexOf("<tr class=\"item tr_item_DichVu\">");
+            int endTrIndex = htmlContent.IndexOf("</tr>", startTrIndex) + 5;
+            string trContent = htmlContent.Substring(startTrIndex, endTrIndex - startTrIndex);
 
-            //lấy dịch vụ
+            StringBuilder finalHtmlContent = new StringBuilder();
+            StringBuilder qrCodeDetails = new StringBuilder();
 
-            if (bill.DetailOrder.Count > 0)
+            // Lặp qua từng sản phẩm trong hóa đơn
+            foreach (var item in bill.DetailOrder)
             {
+                // Thay thế thông tin sản phẩm trong HTML
+                string itemHtmlContent = string.Copy(trContent);
+                itemHtmlContent = itemHtmlContent.Replace("{{TenDichVu}}", item.Product.ProductName + item.DetailProduct.Size);
+                itemHtmlContent = itemHtmlContent.Replace("{{size}}", item.DetailProduct.Size);
+                itemHtmlContent = itemHtmlContent.Replace("{{DonGia}}", item.DetailProduct.Price.ToString());
+                itemHtmlContent = itemHtmlContent.Replace("{{soLuong}}", item.Quantity.ToString());
+                itemHtmlContent = itemHtmlContent.Replace(
+                    "{{TongTien}}",
+                    (Convert.ToInt32(item.Quantity) * Convert.ToInt32(item.DetailProduct.Price)).ToString()
+                );
 
-                int startTrIndex = htmlContent.IndexOf("<tr class=\"item tr_item_DichVu\">");
-                int endTrIndex = htmlContent.IndexOf("</tr>", startTrIndex) + 5; // +5 để bao gồm cả thẻ </tr>
-                string trContent = htmlContent.Substring(startTrIndex, endTrIndex - startTrIndex);
-                // Biến để lưu nội dung HTML cuối cùng
-                StringBuilder finalHtmlContent = new StringBuilder();
+                finalHtmlContent.Append(itemHtmlContent);
 
-                // Lặp qua từng mục trong danh sách
-                foreach (var item in bill.DetailOrder)
-                {
-                    // Sao chép nội dung HTML gốc
-                    string itemHtmlContent = string.Copy(trContent);
-                    // Thay thế các placeholder trong HTML với dữ liệu thực tế
-                    itemHtmlContent = itemHtmlContent.Replace("{{TenDichVu}}", item.Product.ProductName + item.DetailProduct.Size);
-                    itemHtmlContent = itemHtmlContent.Replace("{{size}}", item.DetailProduct.Size);
-                    itemHtmlContent = itemHtmlContent.Replace("{{DonGia}}", item.DetailProduct.Price.ToString());
-                    itemHtmlContent = itemHtmlContent.Replace("{{soLuong}}", item.Quantity.ToString());
-                    itemHtmlContent = itemHtmlContent.Replace(
-    "{{TongTien}}",
-    (Convert.ToInt32(item.Quantity) * Convert.ToInt32(item.DetailProduct.Price)).ToString()
-);
-
-
-
-
-                    finalHtmlContent.Append(itemHtmlContent);
-                }
-
-                htmlContent = htmlContent.Replace("{{TongTienThanhToan}}", bill.TotalPrice.ToString());
-
-
-                htmlContent = htmlContent.Replace(trContent, finalHtmlContent.ToString());
+                // Thêm chi tiết sản phẩm vào nội dung QR code
+                qrCodeDetails.AppendLine($"- Sản phẩm: {item.Product.ProductName}");
+                qrCodeDetails.AppendLine($"- Size: {item.DetailProduct.Size}");
+                qrCodeDetails.AppendLine($"- Đơn giá: {item.DetailProduct.Price}");
+                qrCodeDetails.AppendLine($"- Số lượng: {item.Quantity}");
+                qrCodeDetails.AppendLine($"- Tổng: {item.Quantity * item.DetailProduct.Price}");
             }
 
+            htmlContent = htmlContent.Replace(trContent, finalHtmlContent.ToString());
+            htmlContent = htmlContent.Replace("{{TongTienThanhToan}}", bill.TotalPrice.ToString());
 
+            // Tạo nội dung QR code
+            StringBuilder qrCodeContent = new StringBuilder();
+            qrCodeContent.AppendLine($"Mã Hóa Đơn: {bill.OrderCode}");
+            qrCodeContent.AppendLine($"Ngày Tạo: {DateTime.Now}");
+            qrCodeContent.AppendLine($"Khách Hàng: {bill.FullName}");
+            qrCodeContent.AppendLine($"Số Điện Thoại: {bill.NumberPhone}");
+            qrCodeContent.AppendLine($"Email: {email}");
+            qrCodeContent.AppendLine($"Tổng Tiền Thanh Toán: {bill.TotalPrice}");
+            qrCodeContent.AppendLine("Chi Tiết Sản Phẩm:");
 
+            // Thêm thông tin sản phẩm vào QR code content
+            foreach (var item in bill.DetailOrder)
+            {
+                qrCodeContent.AppendLine($"- Sản phẩm: {item.Product.ProductName}");
+                qrCodeContent.AppendLine($"- Size: {item.DetailProduct.Size}");
+                qrCodeContent.AppendLine($"- Đơn giá: {item.DetailProduct.Price}");
+                qrCodeContent.AppendLine($"- Số lượng: {item.Quantity}");
+                qrCodeContent.AppendLine($"- Tổng: {item.Quantity * item.DetailProduct.Price}");
+            }
 
+            // Kiểm tra độ dài mã QR (tối đa 2953 ký tự cho QR tiêu chuẩn)
+            if (qrCodeContent.Length > 2953)
+            {
+                throw new Exception("Nội dung quá dài để tạo mã QR. Vui lòng rút gọn thông tin.");
+            }
+
+            // Tạo mã QR
+            var qrCodeImage = await _qrCoder.QRCodeAsync(qrCodeContent.ToString());
+            string qrCodeFileName = "qrcode.png";
+
+            // Chuẩn bị nội dung email
+            var emailBody = new StringBuilder();
+            emailBody.AppendLine("Tài khoản đã được thay đổi!");
+            emailBody.AppendLine("Vui lòng quét mã QR dưới đây để xác nhận tài khoản đã được thay đổi của bạn:");
+            emailBody.AppendLine($"<img src='cid:{qrCodeFileName}' alt='QR Code' />");
+            htmlContent = htmlContent.Replace("{{qrCodeImage}}", $"<img src='cid:{qrCodeFileName}' alt='QR Code' />");
+
+            // Gửi email
+            await SendEmailAsync(email, "Hóa Đơn Thanh Toán", emailBody.ToString(), qrCodeImage, qrCodeFileName);
 
             return htmlContent;
-       
         }
+
+
         public async Task<OrderUserForDetailDtos> GetOrderById(int id)
         {
             var order = await _context.Orders

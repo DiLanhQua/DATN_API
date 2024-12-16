@@ -37,7 +37,9 @@ namespace DATN_Core.DTO
         public string Address { get; set; } = string.Empty;
 
         public int Status { get; set; }
-        
+
+
+        public string? Reason { get; set; }
         public decimal TotalPrice { get; set; }
 
         public string PaymentMethod { get; set; } = string.Empty;
