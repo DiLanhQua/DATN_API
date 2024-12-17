@@ -102,7 +102,7 @@ namespace DATN_Infrastructure.Repository
             {
                 var account = await _context.Accounts
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.UserName == username && x.Password == password && x.Role == 2 && x.Status == 1);
+                    .FirstOrDefaultAsync(x => x.UserName == username && x.Password == password );
 
                 if (account == null)
                     return null;
@@ -151,7 +151,7 @@ namespace DATN_Infrastructure.Repository
                 Email = registerDTO.Email,
                 Password = registerDTO.Password,
                 Role = registerDTO.Role,
-
+                Status =1,
                 Address = registerDTO.Address,
                 Image = "Image.png",
             };

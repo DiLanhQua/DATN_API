@@ -52,7 +52,7 @@ namespace DATN_Core.DTO
         public string FullName { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public byte Role { get; set; }
-        public int Status { get; set; } = 0;
+        public int Status { get; set; } = 1;
     }
 
     public class ProfileDTO
@@ -64,7 +64,7 @@ namespace DATN_Core.DTO
         public string FullName { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
 
-        public int Status { get; set; } = 0;
+        public int Status { get; set; } = 1;
     }
 
     public class UpProfile

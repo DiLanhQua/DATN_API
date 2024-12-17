@@ -52,9 +52,14 @@ namespace DATN_API.Controllers
                 }
 
                 // Kiểm tra trạng thái tài khoản
+                if (account.Status == 2)
+                {
+                    return Unauthorized(new { Message = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ 0397387495 hoặc gửi Email đến (champhan625@gmail.com)" });
+                }
+
                 if (account.Status != 1)
                 {
-                    return Forbid(new { Message = "Tài khoản của bạn không hoạt động. Vui lòng xác nhận tài khoản bằng Email." });
+                    return Unauthorized(new { Message = "Tài khoản của bạn không hoạt động. Vui lòng xác nhận tài khoản bằng Email." });
                 }
 
                 return Ok(new
