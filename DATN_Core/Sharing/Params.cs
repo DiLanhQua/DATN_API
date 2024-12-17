@@ -16,11 +16,11 @@ namespace DATN_Core.Sharing
             set => pageSize = value > maxPageSize ? maxPageSize : value;
         }
         public int PageNumber { get; set; } = 1;
-        private string _search;
-        public string Search
+        private string? _search;
+        public string? Search
         {
             get => _search;
-            set => _search = value.ToLower();
+            set => _search = value?.ToLower();
         }
     }
 }
